@@ -49,6 +49,7 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    */
   async login (req, res, next) {
+    console.log('login')
     try {
       const userDocument = await UserModel.authenticate(req.body.username, req.body.password)
 

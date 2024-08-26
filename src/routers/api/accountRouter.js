@@ -1,6 +1,6 @@
 /**
- * @file Defines the user router.
- * @module routes/userRouter
+ * @file Defines the account router.
+ * @module routers/accountRouter
  * @author Dongzhu Tan
  * @version 3.2.0
  */
@@ -10,11 +10,11 @@ import { AccountController } from '../../controller/AccountController.js'
 
 export const router = express.Router()
 const accountController = new AccountController()
-
+8
 
 // Map HTTP verbs and route paths to controller action methods.
 
-router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the second-hand store！"}' }))
+router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the account page, where you can register an account!"}' }))
 
 // Register
 router.post('/register', (req, res, next) => accountController.register(req, res, next))
