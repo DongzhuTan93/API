@@ -11,4 +11,4 @@ export const router = express.Router()
 
 // Map HTTP verbs and route paths to controller action methods.
 
-router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the second-hand store！"}' }))
+router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the second-hand store, auth server！"}' }))

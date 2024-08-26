@@ -10,7 +10,6 @@ import { AccountController } from '../../controller/AccountController.js'
 
 export const router = express.Router()
 const accountController = new AccountController()
-8
 
 // Map HTTP verbs and route paths to controller action methods.
 
