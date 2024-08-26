@@ -1,0 +1,39 @@
+{
+  "name": "assignment-api-design",
+  "version": "3.1.0",
+  "description": "In this assignment, you will implement a web API following the theory of REST. We encourage you to have your ideas about the API service to build. Maybe you have some idea you want to start with through an API-driven design? For those of you without any ideas, we present a scenario below. That will also give a hint of the extent of this assignment.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon --inspect=9230 -r dotenv/config src/server.js",
+    "lint": "npx eslint ./src || exit 0",
+    "lint:fix": "npx eslint ./src --fix || exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.lnu.se:1dv027/student/dt222ha/assignment-api-design.git"
+  },
+  "author": "Dongzhu Tan <dt222ha@student.se>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@lnu/json-js-cycle": "^2.0.5",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "express-http-context": "^1.2.4",
+    "helmet": "^7.1.0",
+    "http-errors": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.4",
+    "morgan": "^1.10.0",
+    "validator": "^13.12.0",
+    "winston": "^3.14.2"
+  },
+  "devDependencies": {
+    "@lnu/eslint-config": "^1.1.10",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.4"
+  }
+}
