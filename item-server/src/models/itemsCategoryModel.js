@@ -1,6 +1,6 @@
 /**
- * @file Defines the item model.
- * @module model/ImageModel
+ * @file Defines the items category model.
+ * @module model/TtemsCategoryModel
  * @author Dongzhu Tan
  * @version 3.1.0
  */
@@ -8,22 +8,16 @@
 import mongoose from 'mongoose'
 
 // Create a schema.
-const schema = new mongoose.Schema({
-  itemName: {
+const categorySchema = new mongoose.Schema({
+  name: {
     type: String,
-    required: [true, 'The items name is required.']
-  },
-  itemPrice: {
-    type: String,
-    required: [true, 'The items price is required.']
+    required: [true, 'Category name is required'],
+    unique: true,
+    trim: true
   },
   description: {
     type: String,
-    required: [true, 'The items description is required.']
-  },
-  itemId: {
-    type: String,
-    required: [true, 'The items id is required.']
+    trim: true
   }
 }, {
   timestamps: true,
@@ -42,11 +36,11 @@ const schema = new mongoose.Schema({
   }
 })
 
-schema.virtual('id').get(function () {
+categorySchema.virtual('id').get(function () {
   return this._id.toHexString()
 })
 
 // Create a model using the schema.
-export const ItemsModel = mongoose.model('Item', schema)
+export const CategoryModel = mongoose.model('Category', categorySchema)
 
 // I got inspiration here: https://gitlab.lnu.se/1dv026/student/dt222ha/exercises/example-restful-tasks-with-jwt
