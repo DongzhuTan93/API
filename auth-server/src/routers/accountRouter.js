@@ -20,3 +20,6 @@ router.post('/register', (req, res, next) => accountController.register(req, res
 
 // Log in
 router.post('/login', (req, res, next) => accountController.login(req, res, next))
+
+// Log out
+router.post('/logout', (req, res, next) => accountController.logout(req, res, next))

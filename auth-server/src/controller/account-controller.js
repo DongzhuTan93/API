@@ -33,9 +33,9 @@ export class AccountController {
         email
       })
 
-      console.log('New user: ' + userDocument)
+      console.log('New user registered: ' + userDocument)
 
-      res.status(201).json({ message: 'Registered user successful!' })
+      res.status(201).json({ message: 'User registered successfully!' })
     } catch (error) {
       next(error)
     }
@@ -49,7 +49,6 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    */
   async login (req, res, next) {
-    console.log('login')
     try {
       const userDocument = await UserModel.authenticate(req.body.username, req.body.password)
 
@@ -58,7 +57,8 @@ export class AccountController {
 
       const payload = {
         // username: userDocument.username
-        userID: userDocument.id
+        userID: userDocument.id,
+        username: userDocument.username
         // This change assumes that userDocument.id contains the user's unique identifier, which is often a better choice for the payload in a JWT.
         // Using the user ID (often a numeric or UUID value) is more stable, as usernames might change, but IDs generally do not.
         // Additionally, using the ID can enhance privacy and security, as it avoids exposing the username in the token payload. Make sure that the rest of your system is capable of handling the user ID instead of the username wherever necessary.
@@ -77,12 +77,32 @@ export class AccountController {
         sameSite: 'strict' // Adjust based on your requirements.
       })
 
-      res.status(201).json({ message: 'User login successful! AccessToken:' + accessToken })
+      res.status(201).json({
+        message: 'User logged in successfully! The accesstoken: ' + accessToken,
+        userId: userDocument.id,
+        username: userDocument.username
+      })
     } catch (error) {
       // Authentication failed.
       const err = createError(401)
       err.cause = error
       next(err)
+    }
+  }
+
+  /**
+   * User logout from application.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async logout (req, res, next) {
+    try {
+      res.clearCookie('jwtToken')
+      res.status(200).json({ message: 'Logged out successfully' })
+    } catch (error) {
+      next(error)
     }
   }
 }
