@@ -23,7 +23,7 @@ const schema = new mongoose.Schema({
   },
   itemId: {
     type: String,
-    required: [true, 'The user id is required.']
+    required: [true, 'The items id is required.']
   }
 }, {
   timestamps: true,

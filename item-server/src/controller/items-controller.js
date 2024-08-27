@@ -94,13 +94,14 @@ export class ItemsController {
     }
 
     try {
-      const loggedInUser = await req.session.user
+      const loggedInUser = await req.user
+      console.log('login user: ' + JSON.stringify(loggedInUser))
 
       const itemDocument = await ItemsModel.create({
         itemName: req.body.itemName,
         itemPrice: req.body.itemPrice,
         description: req.body.description,
-        itemId: loggedInUser.id
+        itemId: loggedInUser.userID
       })
 
       console.log('New item document has been save to database: ' + itemDocument)
@@ -160,7 +161,7 @@ export class ItemsController {
         itemId: req.user.userID // req.user.userID should be the userId of the logged-in user.
       })
 
-      const loggedInUser = await req.session.user
+      const loggedInUser = await req.user
       if (updateItem.itemId !== loggedInUser.userId) {
         throw new Error('You can not update another peoples item.')
       }

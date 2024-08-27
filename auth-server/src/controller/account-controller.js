@@ -5,7 +5,7 @@
  * @version 3.1.0
  */
 
-import { UserModel } from '../model/UserModel.js'
+import { UserModel } from '../model/userModel.js'
 import createError from 'http-errors'
 import jwt from 'jsonwebtoken'
 import fs from 'fs/promises'
