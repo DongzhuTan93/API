@@ -7,7 +7,7 @@
 import express from 'express'
 
 import { authenticateJWT } from '../middlewares/auth.js'
-import { ItemsController } from '../controller/items-controller.js'
+import { ItemsController } from '../controllers/items-controller.js'
 
 export const router = express.Router()
 const itemsController = new ItemsController()

@@ -6,7 +6,7 @@
  */
 
 import express from 'express'
-import { AccountController } from '../controller/account-controller.js'
+import { AccountController } from '../controllers/account-controller.js'
 
 export const router = express.Router()
 const accountController = new AccountController()

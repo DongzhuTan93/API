@@ -43,8 +43,8 @@ export class CategoryController {
    */
   async createCategory (req, res, next) {
     try {
-      const { name, description } = req.body
-      const category = new CategoryModel({ name, description })
+      const { name } = req.body
+      const category = new CategoryModel({ name })
       await category.save()
       res.status(201).json(category)
     } catch (error) {

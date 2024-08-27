@@ -5,7 +5,7 @@
  * @version 3.1.0
  */
 
-import { ItemsModel } from '../model/itemsModel.js'
+import { ItemsModel } from '../models/itemsModel.js'
 import mongoose from 'mongoose'
 
 /**

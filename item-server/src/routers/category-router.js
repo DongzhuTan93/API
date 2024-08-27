@@ -7,7 +7,7 @@
 
 import express from 'express'
 import { authenticateJWT } from '../middlewares/auth.js'
-import { CategoryController } from '../controller/category-controller.js'
+import { CategoryController } from '../controllers/category-controller.js'
 import { ItemsController } from '../controllers/items-controller.js'
 
 export const router = express.Router()

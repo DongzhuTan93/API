@@ -7,13 +7,13 @@
 import express from 'express'
 import http from 'node:http'
 import { router as homeRouter } from './home-router.js'
-import { router as itemCategoryRouter } from './ategory-router.js'
+import { router as categoryRouter } from './category-router.js'
 import { router as itemRouter } from './item-router.js'
 
 export const router = express.Router()
 
 router.use('/', homeRouter)
-router.use('/categories', itemCategoryRouter)
+router.use('/categories', categoryRouter)
 router.use('/items', itemRouter)
 
 // Catch 404 (ALWAYS keep this as the last route).
