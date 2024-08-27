@@ -11,7 +11,7 @@ import createError from 'http-errors'
 /**
  * Encapsulates a controller.
  */
-export class ItemsCategoryController {
+export class CategoryController {
   /**
    * Displays a list of category at the store.
    *

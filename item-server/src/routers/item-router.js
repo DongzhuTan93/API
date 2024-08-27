@@ -20,10 +20,12 @@ router.get('/', authenticateJWT, (req, res, next) => itemsController.showAllItem
 
 router.post('/', authenticateJWT, (req, res, next) => itemsController.createItem(req, res, next))
 
-router.get('/:imageId', authenticateJWT, (req, res, next) => itemsController.showItemWithId(req, res, next))
+router.get('/:itemId', authenticateJWT, (req, res, next) => itemsController.showItemWithId(req, res, next))
 
-router.put('/:imageId', authenticateJWT, (req, res, next) => itemsController.updateTheWholeItem(req, res, next))
+router.put('/:itemId', authenticateJWT, (req, res, next) => itemsController.updateTheWholeItem(req, res, next))
 
-router.patch('/:imageId', authenticateJWT, (req, res, next) => itemsController.partialUpdateOneItem(req, res, next))
+router.patch('/:itemId', authenticateJWT, (req, res, next) => itemsController.partialUpdateOneItem(req, res, next))
 
-router.delete('/:imageId', authenticateJWT, (req, res, next) => itemsController.deleteOneItem(req, res, next))
+router.delete('/:itemId', authenticateJWT, (req, res, next) => itemsController.deleteOneItem(req, res, next))
+
+router.get('/by-category/:categoryId', (req, res, next) => itemsController.getItemsByCategory(req, res, next))

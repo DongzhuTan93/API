@@ -101,7 +101,8 @@ export class ItemsController {
         itemName: req.body.itemName,
         itemPrice: req.body.itemPrice,
         description: req.body.description,
-        itemId: loggedInUser.userID
+        itemId: loggedInUser.userID,
+        category: req.body.category
       })
 
       console.log('New item document has been save to database: ' + itemDocument)
@@ -256,6 +257,23 @@ export class ItemsController {
       }
 
       res.status(204).json()
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * Get items by category.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async getItemsByCategory (req, res, next) {
+    try {
+      const categoryId = req.params.categoryId
+      const items = await ItemsModel.find({ category: categoryId })
+      res.json(items)
     } catch (error) {
       next(error)
     }
