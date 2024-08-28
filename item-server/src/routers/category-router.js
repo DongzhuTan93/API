@@ -6,7 +6,7 @@
  */
 
 import express from 'express'
-import { authenticateJWT } from '../middlewares/auth.js'
+import { authenticateJWT, authenticateAdmin } from '../middlewares/auth.js'
 import { CategoryController } from '../controllers/category-controller.js'
 import { ItemsController } from '../controllers/items-controller.js'
 
@@ -18,7 +18,7 @@ const itemsController = new ItemsController()
 
 router.get('/', authenticateJWT, (req, res, next) => categoryController.getAllCategories(req, res, next))
 
-router.post('/', authenticateJWT, (req, res, next) => categoryController.createCategory(req, res, next))
+router.post('/', authenticateJWT, authenticateAdmin, (req, res, next) => categoryController.createCategory(req, res, next))
 
 router.get('/:id', authenticateJWT, (req, res, next) => categoryController.getCategoryById(req, res, next))
 

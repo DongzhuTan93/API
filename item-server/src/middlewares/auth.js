@@ -56,5 +56,20 @@ export const authenticateJWT = async (req, res, next) => {
   }
 }
 
+/**
+ * Check if it is a admin account.
+ *
+ * @param {object} req - Express request object.
+ * @param {object} res - Express response object.
+ * @param {Function} next - Express next middleware function.
+ */
+export const authenticateAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next()
+  } else {
+    res.status(403).json({ message: 'Access denied. Admin role required.' })
+  }
+}
+
 // I got inspiration here: https://gitlab.lnu.se/1dv026/student/dt222ha/exercises/example-restful-tasks-with-jwt/-/blob/main/src/middlewares/auth.js?ref_type=heads
 // I got inspiration from ChatGPT
