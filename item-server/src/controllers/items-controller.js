@@ -6,6 +6,8 @@
  */
 
 import { ItemsModel } from '../models/itemsModel.js'
+import { CategoryModel } from '../models/itemsCategoryModel.js'
+
 import mongoose from 'mongoose'
 
 /**
@@ -87,7 +89,7 @@ export class ItemsController {
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
   async createItem (req, res, next) {
-    if (!req.body.itemName && !req.body.itemPrice && !req.body.description) {
+    if (!req.body.itemName && !req.body.itemPrice && !req.body.description && !req.body.category) {
       const error = new Error('The request cannot or will not be processed due to client error (for example, validation error).')
       error.status = 400
       return next(error)
@@ -96,6 +98,14 @@ export class ItemsController {
     try {
       const loggedInUser = await req.user
       console.log('login user: ' + JSON.stringify(loggedInUser))
+
+      // Verify if the category exists.
+      const categoryExists = await CategoryModel.findById(req.body.category)
+      if (!categoryExists) {
+        const error = new Error('Invalid category')
+        error.status = 400
+        return next(error)
+      }
 
       const itemDocument = await ItemsModel.create({
         itemName: req.body.itemName,

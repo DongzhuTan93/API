@@ -1,6 +1,6 @@
 /**
- * @file API version 1 router.
- * @module routes/router
+ * @file Defines the item router.
+ * @module routers/item-router
  * @author Dongzhu Tan
  */
 

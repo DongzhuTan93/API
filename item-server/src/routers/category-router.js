@@ -1,6 +1,6 @@
 /**
- * @file Defines the home router.
- * @module routers/homeRouter
+ * @file Defines the category router.
+ * @module routers/category-router
  * @author Dongzhu Tan
  * @version 3.2.0
  */
