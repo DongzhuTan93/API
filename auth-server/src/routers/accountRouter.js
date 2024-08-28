@@ -15,8 +15,11 @@ const accountController = new AccountController()
 
 router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the account page, where you can register an account!"}' }))
 
-// Register
+// Register user
 router.post('/register', (req, res, next) => accountController.register(req, res, next))
+
+// Register admin
+router.post('/register-admin', (req, res, next) => accountController.registerAdmin(req, res, next))
 
 // Log in
 router.post('/login', (req, res, next) => accountController.login(req, res, next))

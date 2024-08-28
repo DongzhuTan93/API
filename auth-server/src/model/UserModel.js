@@ -45,6 +45,11 @@ const schema = new mongoose.Schema({
     lowercase: true,
     trim: true,
     validate: [isEmail, 'Please provide a valid email address.']
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   }
 }, {
   timestamps: true,
