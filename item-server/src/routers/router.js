@@ -9,9 +9,11 @@ import http from 'node:http'
 
 import { router as categoryRouter } from './category-router.js'
 import { router as itemRouter } from './item-router.js'
+import { router as homeRouter } from './home-router.js'
 
 export const router = express.Router()
 
+router.use('/', homeRouter)
 router.use('/categories', categoryRouter)
 router.use('/items', itemRouter)
 

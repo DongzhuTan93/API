@@ -7,8 +7,12 @@
 
 import express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
+import { router as homeRouter } from './home-router.js'
 
 export const router = express.Router()
+
+// Application home page router.
+router.use('/', homeRouter)
 
 // Auth Server Routes.
 router.use('/auth', createProxyMiddleware({

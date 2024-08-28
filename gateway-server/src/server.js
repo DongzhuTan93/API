@@ -13,7 +13,7 @@ import logger from 'morgan'
 import { randomUUID } from 'node:crypto'
 import http from 'node:http'
 import dotenv from 'dotenv'
-import { router as gatewayRouter } from './routers/gateway-router.js'
+import { router as gatewayRouter } from './router/gateway-router.js'
 
 dotenv.config()
 
