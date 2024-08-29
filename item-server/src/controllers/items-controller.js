@@ -100,19 +100,21 @@ export class ItemsController {
       console.log('login user: ' + JSON.stringify(loggedInUser))
 
       // Verify if the category exists.
-      const categoryExists = await CategoryModel.findById(req.body.category)
-      if (!categoryExists) {
+      const category = await CategoryModel.findOne({ name: req.body.category })
+      if (!category) {
         const error = new Error('Invalid category')
         error.status = 400
         return next(error)
       }
+
+      console.log(' category: ' + req.body.category)
 
       const itemDocument = await ItemsModel.create({
         itemName: req.body.itemName,
         itemPrice: req.body.itemPrice,
         description: req.body.description,
         itemId: loggedInUser.userID,
-        category: req.body.category
+        category: category._id
       })
 
       console.log('New item document has been save to database: ' + itemDocument)

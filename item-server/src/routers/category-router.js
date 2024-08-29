@@ -18,7 +18,7 @@ const itemsController = new ItemsController()
 
 router.get('/', authenticateJWT, (req, res, next) => categoryController.getAllCategories(req, res, next))
 
-router.post('/', authenticateJWT, authenticateAdmin, (req, res, next) => categoryController.createCategory(req, res, next))
+router.post('/create', authenticateJWT, authenticateAdmin, (req, res, next) => categoryController.createCategory(req, res, next))
 
 router.get('/:id', authenticateJWT, (req, res, next) => categoryController.getCategoryById(req, res, next))
 

@@ -22,6 +22,7 @@ export class AccountController {
    * @param {Function} next - Express next middleware function.
    */
   async register (req, res, next) {
+    console.log('hej från register')
     try {
       const { username, password, firstName, lastName, email } = req.body
 

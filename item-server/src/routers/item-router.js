@@ -18,7 +18,7 @@ router.param('id', (req, res, next, id) => itemsController.loadItemsDocument(req
 // Map HTTP verbs and route paths to controller action methods.
 router.get('/', authenticateJWT, (req, res, next) => itemsController.showAllItemsFromUser(req, res, next))
 
-router.post('/', authenticateJWT, (req, res, next) => itemsController.createItem(req, res, next))
+router.post('/create', authenticateJWT, (req, res, next) => itemsController.createItem(req, res, next))
 
 router.get('/:itemId', authenticateJWT, (req, res, next) => itemsController.showItemWithId(req, res, next))
 
