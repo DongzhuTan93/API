@@ -13,7 +13,7 @@ import logger from 'morgan'
 import { randomUUID } from 'node:crypto'
 import http from 'node:http'
 import dotenv from 'dotenv'
-import { router as gatewayRouter } from './router/gateway-router.js'
+import { router } from './routers/router.js'
 
 dotenv.config()
 
@@ -47,8 +47,13 @@ try {
     next()
   })
 
+  app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.path}`)
+    next()
+  })
+
   // Use the gateway router
-  app.use(baseURL, gatewayRouter)
+  app.use('/', router)
 
   // Error handler.
   app.use((err, req, res, next) => {

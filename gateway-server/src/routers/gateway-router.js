@@ -7,32 +7,32 @@
 
 import express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import { router as homeRouter } from './home-router.js'
 
 export const router = express.Router()
 
-// Application home page router.
-router.use('/', homeRouter)
+const baseURL = process.env.BASE_URL || '/second-hand-store/'
+console.log(baseURL)
 
 // Auth Server Routes.
-router.use('/auth', createProxyMiddleware({
+router.use(`${baseURL}auth`, createProxyMiddleware({
   target: `http://localhost:${process.env.AUTH_SERVER_PORT || '8084'}`,
   changeOrigin: true,
-  pathRewrite: { '^/auth': '' }
+  pathRewrite: { [`^${baseURL}auth`]: '/auth' },
+  logLevel: 'debug'
 }))
 
 // Item Server Routes.
-router.use('/items', createProxyMiddleware({
+router.use(`${baseURL}items`, createProxyMiddleware({
   target: `http://localhost:${process.env.ITEM_SERVER_PORT || '8085'}`,
   changeOrigin: true,
-  pathRewrite: { '^/items': '' }
+  pathRewrite: { [`^${baseURL}items`]: '' }
 }))
 
 // Category Routes (also handled by Item Server).
-router.use('/categories', createProxyMiddleware({
+router.use(`${baseURL}categories`, createProxyMiddleware({
   target: `http://localhost:${process.env.ITEM_SERVER_PORT || '8085'}`,
   changeOrigin: true,
-  pathRewrite: { '^/categories': '/categories' }
+  pathRewrite: { [`^${baseURL}categories`]: '' }
 }))
 
 // Catch-all route for 404 errors.
