@@ -50,6 +50,27 @@ export class ItemsController {
   }
 
   /**
+   * Displays a list of items at the store.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
+   */
+  async getAllItems (req, res, next) {
+    try {
+      const items = {
+        items: (await ItemsModel.find()).map(item => item.toObject()),
+        message: 'Items fetching successful!'
+      }
+
+      res.status(200).json(items)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
    * Displays a list of items.
    *
    * @param {object} req - Express request object.
@@ -71,7 +92,7 @@ export class ItemsController {
 
       const viewItemData = {
         items: userItems.map(item => item.toObject()),
-        message: 'Items fetching successful!'
+        message: 'Users items fetching successful!'
       }
 
       res.status(200).json(viewItemData)

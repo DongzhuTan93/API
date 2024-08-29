@@ -16,7 +16,7 @@ const itemsController = new ItemsController()
 
 // Map HTTP verbs and route paths to controller action methods.
 
-router.get('/', authenticateJWT, (req, res, next) => categoryController.getAllCategories(req, res, next))
+router.get('/', (req, res, next) => categoryController.getAllCategories(req, res, next))
 
 router.post('/create', authenticateJWT, authenticateAdmin, (req, res, next) => categoryController.createCategory(req, res, next))
 

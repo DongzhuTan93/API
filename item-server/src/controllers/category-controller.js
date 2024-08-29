@@ -23,7 +23,7 @@ export class CategoryController {
   async getAllCategories (req, res, next) {
     try {
       const categories = {
-        items: (await CategoryModel.find()).map(item => item.toObject()),
+        categories: (await CategoryModel.find()).map(item => item.toObject()),
         message: 'Categories fetching successful!'
       }
 
