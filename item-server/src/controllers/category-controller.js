@@ -6,6 +6,7 @@
  */
 
 import { CategoryModel } from '../models/itemsCategoryModel.js'
+import { ItemsModel } from '../models/itemsModel.js'
 import createError from 'http-errors'
 
 /**
@@ -67,6 +68,44 @@ export class CategoryController {
         throw createError(404, 'Category not found')
       }
       res.status(201).json(category)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * Get category with items.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async getCategoryWithItems (req, res, next) {
+    try {
+      const categoryName = req.params.categoryName
+
+      // Find the category by name.
+      const category = await CategoryModel.findOne({ name: categoryName })
+
+      if (!category) {
+        res.status(404).json({ message: 'Category not found' })
+      }
+
+      // Find items in this category.
+      const items = await ItemsModel.find({ category: category._id })
+
+      // Prepare the response
+      const response = {
+        category: {
+          id: category._id,
+          name: category.name
+          // Include other category fields as needed
+        },
+        itemCount: items.length,
+        items
+      }
+
+      res.json(response)
     } catch (error) {
       next(error)
     }

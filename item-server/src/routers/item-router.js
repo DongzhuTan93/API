@@ -18,9 +18,9 @@ router.param('id', (req, res, next, id) => itemsController.loadItemsDocument(req
 // Map HTTP verbs and route paths to controller action methods.
 router.get('/', authenticateJWT, (req, res, next) => itemsController.getAllItems(req, res, next))
 
-router.get('/my-items', authenticateJWT, (req, res, next) => itemsController.showAllItemsFromUser(req, res, next))
-
 router.post('/create', authenticateJWT, (req, res, next) => itemsController.createItem(req, res, next))
+
+router.get('/my-items', authenticateJWT, (req, res, next) => itemsController.showAllItemsFromUser(req, res, next))
 
 router.get('/:itemId', authenticateJWT, (req, res, next) => itemsController.showItemWithId(req, res, next))
 
@@ -29,5 +29,3 @@ router.put('/:itemId', authenticateJWT, (req, res, next) => itemsController.upda
 router.patch('/:itemId', authenticateJWT, (req, res, next) => itemsController.partialUpdateOneItem(req, res, next))
 
 router.delete('/:itemId', authenticateJWT, (req, res, next) => itemsController.deleteOneItem(req, res, next))
-
-router.get('/by-category/:categoryId', (req, res, next) => itemsController.getItemsByCategory(req, res, next))
