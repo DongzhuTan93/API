@@ -275,4 +275,44 @@ export class ItemsController {
       next(error)
     }
   }
+
+  /**
+   * Retrieves all users and their items (admin only).
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async getAllUsersWithItems (req, res, next) {
+    try {
+      // Fetch all users from auth server
+      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+        headers: {
+          Authorization: req.headers.authorization
+        }
+      })
+
+      if (!usersResponse.ok) {
+        throw new Error('Failed to fetch users from auth server')
+      }
+
+      const usersData = await usersResponse.json()
+
+      // Fetch items for each user
+      const usersWithItems = await Promise.all(usersData.users.map(async (user) => {
+        const items = await ItemsModel.find({ itemId: user.id })
+        return {
+          ...user,
+          items
+        }
+      }))
+
+      res.status(200).json({
+        users: usersWithItems,
+        message: 'All users and their items retrieved successfully.'
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
 }

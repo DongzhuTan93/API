@@ -141,4 +141,33 @@ export class AccountController {
       next(error)
     }
   }
+
+  /**
+   * Retrieves all users (admin only).
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async getAllUsers (req, res, next) {
+    try {
+      // Fetch all users from the database, excluding the password field
+      const users = await UserModel.find({}, '-password')
+
+      if (users.length === 0) {
+        res.status(200).json({
+          users: [],
+          message: 'No users found in the database.'
+        })
+      }
+
+      res.status(200).json({
+        users,
+        message: 'All users retrieved successfully.'
+      })
+    } catch (error) {
+      console.error('Error in getAllUsers:', error)
+      next(createError(500, 'An error occurred while retrieving users'))
+    }
+  }
 }

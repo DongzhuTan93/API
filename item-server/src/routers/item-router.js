@@ -6,7 +6,7 @@
 
 import express from 'express'
 
-import { authenticateJWT } from '../middlewares/auth.js'
+import { authenticateJWT, authenticateAdmin } from '../middlewares/auth.js'
 import { ItemsController } from '../controllers/items-controller.js'
 
 export const router = express.Router()
@@ -29,3 +29,6 @@ router.put('/:itemId', authenticateJWT, (req, res, next) => itemsController.upda
 router.patch('/:itemId', authenticateJWT, (req, res, next) => itemsController.partialUpdateOneItem(req, res, next))
 
 router.delete('/:itemId', authenticateJWT, (req, res, next) => itemsController.deleteOneItem(req, res, next))
+
+// New admin route to get all users with their items
+router.get('/admin/users-with-items', authenticateJWT, authenticateAdmin, (req, res, next) => itemsController.getAllUsersWithItems(req, res, next))

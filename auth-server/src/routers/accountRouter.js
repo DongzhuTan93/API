@@ -7,6 +7,7 @@
 
 import express from 'express'
 import { AccountController } from '../controllers/account-controller.js'
+import { authenticateJWT, authenticateAdmin } from '../middlewares/auth.js'
 
 export const router = express.Router()
 const accountController = new AccountController()
@@ -26,3 +27,6 @@ router.post('/login', (req, res, next) => accountController.login(req, res, next
 
 // Log out
 router.post('/logout', (req, res, next) => accountController.logout(req, res, next))
+
+// New admin route to get all users
+router.get('/admin/users', authenticateJWT, authenticateAdmin, (req, res, next) => accountController.getAllUsers(req, res, next))
