@@ -71,7 +71,7 @@ export class ItemsController {
   }
 
   /**
-   * Displays a list of items.
+   * Displays a list of items from a specific user.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -111,7 +111,7 @@ export class ItemsController {
    */
   async createItem (req, res, next) {
     if (!req.body.itemName && !req.body.itemPrice && !req.body.description && !req.body.category) {
-      const error = new Error('The request cannot or will not be processed due to client error (for example, validation error).')
+      const error = new Error('Missing required fields.')
       error.status = 400
       return next(error)
     }
@@ -156,18 +156,16 @@ export class ItemsController {
   async showItemWithId (req, res, next) {
     try {
       // Using 'itemId' field to find the document.
-      const item = await ItemsModel.findOne({
-        itemId: req.user.userID // req.user.userID should be the userId of the logged-in user.
-      })
+      const item = await ItemsModel.findById(req.params.itemId)
 
       if (!item) {
       // If the item document is not found, return a 404 Not Found response.
-        const error = new Error('The requested resource was not found or you do not have permission to update it.')
+        const error = new Error('Item not found.')
         error.status = 404
         return next(error)
       }
 
-      // Respond with the item document
+      // Respond with the item document.
       res.status(200).json(item)
     } catch (error) {
       next(error)
@@ -183,46 +181,48 @@ export class ItemsController {
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
   async updateTheWholeItem (req, res, next) {
-    if (!req.body.itemName && !req.body.itemPrice && !req.body.description) {
-      const error = new Error('The request cannot or will not be processed due to client error (for example, validation error).')
+    if (!req.body.itemName && !req.body.itemPrice && !req.body.description && !req.body.category) {
+      const error = new Error('Missing required fields.')
       error.status = 400
       return next(error)
     }
 
     try {
       // Find the item by itemId and verify that the userId matches the logged-in user's id.
-      const updateItem = await ItemsModel.findOne({
-        itemId: req.user.userID // req.user.userID should be the userId of the logged-in user.
-      })
+      const item = await ItemsModel.findOne({ _id: req.params.itemId, itemId: req.user.userID }) // Find the update item with items unique object id and the specific users id.
 
-      const loggedInUser = await req.user
-      if (updateItem.itemId !== loggedInUser.userId) {
-        throw new Error('You can not update another peoples item.')
-      }
-
-      if (!updateItem) {
+      if (!item) {
       // If the item is not found or the userId does not match, return a 404 error.
         const error = new Error('The requested resource was not found or you do not have permission to update it.')
         error.status = 404
         return next(error)
       }
 
+      const category = await CategoryModel.findOne({ name: req.body.category })
+      if (!category) {
+        return res.status(400).json({ message: 'Invalid category' })
+      }
+
       // Update local database only after a successful update on the remote server.
-      const updateDocument = await ItemsModel.findOneAndUpdate({ itemId: updateItem.itemId }, {
+      const updateItem = await ItemsModel.findByIdAndUpdate(req.params.itemId, {
         itemName: req.body.itemName,
         itemPrice: req.body.itemPrice,
-        description: req.body.description
-      }, { new: true })
-      console.log('update document:' + updateDocument)
+        description: req.body.description,
+        category: category._id
+      },
+      { new: true }
+      )
 
-      res.status(204).json(updateDocument)
+      console.log('update document:' + updateItem)
+
+      res.status(200).json(updateItem)
     } catch (error) {
       next(error)
     }
   }
 
   /**
-   * Partial update the specific items price with its id.
+   * Partial update the specific items with its id.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -231,31 +231,22 @@ export class ItemsController {
    */
   async partialUpdateOneItem (req, res, next) {
     try {
-      // Check if at least one field is provided for update.
-      const fieldsToUpdate = ['itemPrice']
-
-      const hasAtLeastOneField = fieldsToUpdate.some(field => Object.prototype.hasOwnProperty.call(req.body, field))
-
-      // I got inspiration here:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
-      // https://chat.openai.com/
-
-      const partialUpdateItem = await ItemsModel.findOne({
-        itemId: req.user.userID // req.user.userID should be the userId of the logged-in user.
-      })
-
-      if (!hasAtLeastOneField) {
-        const error = new Error('The requested resource was not found or you do not have permission to update it.')
-        error.status = 404
-        return next(error)
+      if (!req.body.itemPrice) {
+        return res.status(400).json({ message: 'Item price is required for partial update.' })
       }
 
-      const partialUpdateDocument = await ItemsModel.findOneAndUpdate({ itemId: partialUpdateItem.itemId }, {
-        itemPrice: req.body.itemPrice
-      }, { new: true })
-      console.log('Partial update document:' + partialUpdateDocument)
+      const partialUpdateItem = await ItemsModel.findOneAndUpdate(
+        { _id: req.params.itemId, itemId: req.user.userID },
+        { itemPrice: req.body.itemPrice },
+        { new: true })
 
-      res.status(204).json()
+      console.log('Partial update document:' + partialUpdateItem)
+
+      if (!partialUpdateItem) {
+        return res.status(404).json({ message: 'Item not found or you do not have permission to update it.' })
+      }
+
+      res.status(200).json(partialUpdateItem)
     } catch (error) {
       next(error)
     }
@@ -271,25 +262,15 @@ export class ItemsController {
    */
   async deleteOneItem (req, res, next) {
     try {
-      const itemDocument = await ItemsModel.findOne({
-        itemId: req.user.userID // req.user.userID should be the userId of the logged-in user.
-      })
-
-      if (!itemDocument) {
-        const error = new Error('The requested resource was not found or you do not have permission to update it.')
-        error.status = 404
-        return next(error)
-      }
-
-      const deletedItem = await ItemsModel.findOneAndDelete({ itemId: req.params.itemId })
+      const deletedItem = await ItemsModel.findOneAndDelete(
+        { _id: req.params.itemId, itemId: req.user.userID }
+      )
 
       if (!deletedItem) {
-        const error = new Error('The requested resource was not found or you do not have permission to update it.')
-        error.status = 404
-        return next(error)
+        return res.status(404).json({ message: 'Item not found or you do not have permission to delete it.' })
       }
 
-      res.status(204).json()
+      res.status(204).send()
     } catch (error) {
       next(error)
     }

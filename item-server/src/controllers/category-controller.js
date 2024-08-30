@@ -99,7 +99,7 @@ export class CategoryController {
         category: {
           id: category._id,
           name: category.name
-          // Include other category fields as needed
+          // Include other category fields as needed.
         },
         itemCount: items.length,
         items
