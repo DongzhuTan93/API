@@ -286,7 +286,7 @@ export class ItemsController {
   async getAllUsersWithItems (req, res, next) {
     try {
       // Fetch all users from auth server
-      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/second-hand-store/auth/admin/users`, {
         headers: {
           Authorization: req.headers.authorization
         }
