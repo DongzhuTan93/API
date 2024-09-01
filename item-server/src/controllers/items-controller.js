@@ -64,6 +64,8 @@ export class ItemsController {
         message: 'Items fetching successful!'
       }
 
+      // Add Cache-Control header.
+      res.set('Cache-Control', 'public, max-age=300') // Cache for 5 minutes.
       res.status(200).json(items)
     } catch (error) {
       next(error)
@@ -165,7 +167,8 @@ export class ItemsController {
         return next(error)
       }
 
-      // Respond with the item document.
+      // Add Cache-Control header
+      res.set('Cache-Control', 'public, max-age=300') // Cache for 5 minutes.
       res.status(200).json(item)
     } catch (error) {
       next(error)

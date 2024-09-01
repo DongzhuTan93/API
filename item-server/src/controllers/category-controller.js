@@ -28,6 +28,8 @@ export class CategoryController {
         message: 'Categories fetching successful!'
       }
 
+      // Add Cache-Control header.
+      res.set('Cache-Control', 'public, max-age=3600') // Cache for 1 hour.
       res.status(200).json(categories)
     } catch (error) {
       next(error)
@@ -105,6 +107,8 @@ export class CategoryController {
         items
       }
 
+      // Add Cache-Control header.
+      res.set('Cache-Control', 'public, max-age=300') // Cache for 5 minutes without needing to request it again from server.
       res.json(response)
     } catch (error) {
       next(error)
