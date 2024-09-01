@@ -1,40 +1,41 @@
 /**
  * @file Defines the main router.
- * @module router
+ * @module router/main router
  * @author Dongzhu Tan
  */
 
 import express from 'express'
-import { createProxyMiddleware } from 'http-proxy-middleware'
 import { router as homeRouter } from './home-router.js'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 
 export const router = express.Router()
-
 const baseURL = process.env.BASE_URL || '/second-hand-store/'
+const apiVersion = 'api/v1'
 
-// Home route
-router.use(baseURL, homeRouter)
+// API v1 routes
+router.use('/', homeRouter)
 
-// Auth Server Routes
-router.use(`${baseURL}auth`, createProxyMiddleware({
+router.use(`${baseURL}${apiVersion}/auth`, createProxyMiddleware({
   target: `http://localhost:${process.env.AUTH_SERVER_PORT || '8084'}`,
   changeOrigin: true,
-  pathRewrite: { [`^${baseURL}auth`]: '/' },
+  [`^${baseURL}${apiVersion}/auth`]: `${apiVersion}/auth`,
   logLevel: 'debug'
 }))
 
 // Item Server Routes
-router.use(`${baseURL}items`, createProxyMiddleware({
+router.use('api/vi/items', createProxyMiddleware({
   target: `http://localhost:${process.env.ITEM_SERVER_PORT || '8085'}`,
   changeOrigin: true,
-  pathRewrite: { [`^${baseURL}items`]: '' }
+  pathRewrite: { '^/items': '/api/v1/items' },
+  logLevel: 'debug'
 }))
 
 // Category Routes (also handled by Item Server)
-router.use(`${baseURL}categories`, createProxyMiddleware({
+router.use('api/vi/categories', createProxyMiddleware({
   target: `http://localhost:${process.env.ITEM_SERVER_PORT || '8085'}`,
   changeOrigin: true,
-  pathRewrite: { [`^${baseURL}categories`]: '' }
+  pathRewrite: { '^/categories': '/api/v1/categories' },
+  logLevel: 'debug'
 }))
 
 // Catch-all route for 404 errors

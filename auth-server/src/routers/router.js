@@ -6,13 +6,11 @@
 
 import express from 'express'
 import http from 'node:http'
-import { router as accountRouter } from './accountRouter.js'
-import { router as homeRouter } from './home-router.js'
+import { router as apiV1Router } from './api/v1/router.js'
 
 export const router = express.Router()
 
-router.use('/', homeRouter)
-router.use('/auth', accountRouter)
+router.use('/api/v1', apiV1Router)
 
 // Catch 404 (ALWAYS keep this as the last route).
 router.use('*', (req, res, next) => {

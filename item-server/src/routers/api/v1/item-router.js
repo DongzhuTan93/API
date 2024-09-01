@@ -6,8 +6,8 @@
 
 import express from 'express'
 
-import { authenticateJWT, authenticateAdmin } from '../middlewares/auth.js'
-import { ItemsController } from '../controllers/items-controller.js'
+import { authenticateJWT, authenticateAdmin } from '../../../middlewares/auth.js'
+import { ItemsController } from '../../../controllers/items-controller.js'
 
 export const router = express.Router()
 const itemsController = new ItemsController()
@@ -17,6 +17,7 @@ router.param('id', (req, res, next, id) => itemsController.loadItemsDocument(req
 
 // Public routes.
 router.get('/', (req, res, next) => itemsController.getAllItems(req, res, next))
+
 router.get('/:itemId', (req, res, next) => itemsController.showItemWithId(req, res, next))
 
 // Protected routes.
@@ -30,5 +31,5 @@ router.patch('/:itemId', authenticateJWT, (req, res, next) => itemsController.pa
 
 router.delete('/:itemId', authenticateJWT, (req, res, next) => itemsController.deleteOneItem(req, res, next))
 
-// New admin route to get all users with their items
+// New admin route to get all users with their items.
 router.get('/admin/users-with-items', authenticateJWT, authenticateAdmin, (req, res, next) => itemsController.getAllUsersWithItems(req, res, next))

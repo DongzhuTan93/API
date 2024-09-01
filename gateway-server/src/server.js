@@ -48,12 +48,12 @@ try {
   })
 
   app.use((req, res, next) => {
-    console.log(`Incoming request: ${req.method} ${req.path}`)
+    console.log('Incoming request:', req.method, req.originalUrl)
     next()
   })
 
   // Use the gateway router
-  app.use('/', router)
+  app.use(baseURL, router)
 
   // Error handler.
   app.use((err, req, res, next) => {

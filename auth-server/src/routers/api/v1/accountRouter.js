@@ -6,8 +6,8 @@
  */
 
 import express from 'express'
-import { AccountController } from '../controllers/account-controller.js'
-import { authenticateJWT, authenticateAdmin } from '../middlewares/auth.js'
+import { AccountController } from '../../../controllers/account-controller.js'
+import { authenticateJWT, authenticateAdmin } from '../../../middlewares/auth.js'
 
 export const router = express.Router()
 const accountController = new AccountController()
@@ -16,17 +16,17 @@ const accountController = new AccountController()
 
 router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the account page, where you can register an account!"}' }))
 
-// Register user
+// Register user.
 router.post('/register', (req, res, next) => accountController.register(req, res, next))
 
-// Register admin
+// Register admin.
 router.post('/register-admin', (req, res, next) => accountController.registerAdmin(req, res, next))
 
-// Log in
+// Log in.
 router.post('/login', (req, res, next) => accountController.login(req, res, next))
 
-// Log out
+// Log out.
 router.post('/logout', (req, res, next) => accountController.logout(req, res, next))
 
-// New admin route to get all users
+// New admin route to get all users.
 router.get('/admin/users', authenticateJWT, authenticateAdmin, (req, res, next) => accountController.getAllUsers(req, res, next))
