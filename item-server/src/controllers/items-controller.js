@@ -81,20 +81,17 @@ export class ItemsController {
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
   async showAllItemsFromUser (req, res, next) {
-    console.log('Hello from /items !')
     try {
-      // Assuming each item document has a 'itemId' field that matches 'req.user.id'.
-      const userItems = await ItemsModel.find({ itemId: req.user.userID })
+      const userId = req.params.userId
+      const userItems = await ItemsModel.find({ itemId: userId })
 
       if (userItems.length === 0) {
-        const error = new Error('No items found for this user.')
-        error.status = 404
-        return next(error)
+        return res.status(404).json({ message: 'No items found for this user.' })
       }
 
       const viewItemData = {
         items: userItems.map(item => item.toObject()),
-        message: 'Users items fetching successful!'
+        message: 'User items fetching successful!'
       }
 
       res.status(200).json(viewItemData)
@@ -119,9 +116,6 @@ export class ItemsController {
     }
 
     try {
-      const loggedInUser = await req.user
-      console.log('login user: ' + JSON.stringify(loggedInUser))
-
       // Verify if the category exists.
       const category = await CategoryModel.findOne({ name: req.body.category })
       if (!category) {
@@ -136,7 +130,7 @@ export class ItemsController {
         itemName: req.body.itemName,
         itemPrice: req.body.itemPrice,
         description: req.body.description,
-        itemId: loggedInUser.userID,
+        itemId: req.body.userId,
         category: category._id
       })
 
@@ -234,16 +228,23 @@ export class ItemsController {
    */
   async partialUpdateOneItem (req, res, next) {
     try {
+      const userID = req.headers['x-user-id'] // Get the user ID from the custom header
+
+      if (!userID) {
+        return res.status(401).json({ message: 'User ID not provided' })
+      }
+
       if (!req.body.itemPrice) {
         return res.status(400).json({ message: 'Item price is required for partial update.' })
       }
 
       const partialUpdateItem = await ItemsModel.findOneAndUpdate(
-        { _id: req.params.itemId, itemId: req.user.userID },
+        { _id: req.params.itemId, itemId: userID },
         { itemPrice: req.body.itemPrice },
-        { new: true })
+        { new: true }
+      )
 
-      console.log('Partial update document:' + partialUpdateItem)
+      console.log('Partial update document:', partialUpdateItem)
 
       if (!partialUpdateItem) {
         return res.status(404).json({ message: 'Item not found or you do not have permission to update it.' })
@@ -289,7 +290,7 @@ export class ItemsController {
   async getAllUsersWithItems (req, res, next) {
     try {
       // Fetch all users from auth server
-      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/second-hand-store/api/v1/auth/admin/users`, {
+      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
         headers: {
           Authorization: req.headers.authorization
         }

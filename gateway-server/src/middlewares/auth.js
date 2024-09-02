@@ -70,6 +70,3 @@ export const authenticateAdmin = (req, res, next) => {
     res.status(403).json({ message: 'Access denied. Admin role required.' })
   }
 }
-
-// I got inspiration here: https://gitlab.lnu.se/1dv026/student/dt222ha/exercises/example-restful-tasks-with-jwt/-/blob/main/src/middlewares/auth.js?ref_type=heads
-// I got inspiration from ChatGPT

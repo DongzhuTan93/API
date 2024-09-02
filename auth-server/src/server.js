@@ -36,7 +36,7 @@ try {
   app.use(express.json())
 
   // Set the base URL to use for all relative URLs in a document.
-  const baseURL = process.env.BASE_URL || '/second-hand-store/'
+  const baseURL = process.env.BASE_URL || '/'
 
   // Set up a morgan logger using the dev format for log entries.
   app.use(logger('dev'))
