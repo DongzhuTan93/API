@@ -159,18 +159,32 @@ export class GatewayItemsController {
    */
   async updateEntireItem (req, res, next) {
     try {
+      if (!req.user || !req.user.userID) {
+        return res.status(401).json({ message: 'User not authenticated or userID not found' })
+      }
+
+      console.log(`Updating item ${req.params.itemId} for user ${req.user.userID}`)
+
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${req.params.itemId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: req.headers.authorization
+          'X-User-ID': req.user.userID
         },
         body: JSON.stringify(req.body)
       })
+
       const data = await response.json()
 
-      res.status(response.status).json(data)
+      if (!response.ok) {
+        console.error('Error response from items server:', response.status, data)
+        return res.status(response.status).json(data)
+      }
+
+      console.log('Item updated successfully:', data)
+      res.status(200).json(data)
     } catch (error) {
+      console.error('Error in updateEntireItem:', error)
       next(error)
     }
   }
@@ -222,17 +236,30 @@ export class GatewayItemsController {
    */
   async removeItem (req, res, next) {
     try {
+      if (!req.user || !req.user.userID) {
+        return res.status(401).json({ message: 'User not authenticated or userID not found' })
+      }
+
+      console.log(`Attempting to delete item ${req.params.itemId} for user ${req.user.userID}`)
+
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${req.params.itemId}`, {
         method: 'DELETE',
-        headers: { Authorization: req.headers.authorization }
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-ID': req.user.userID
+        }
       })
+
       if (response.status === 204) {
+        console.log(`Item ${req.params.itemId} successfully deleted`)
         res.status(204).send()
       } else {
         const data = await response.json()
+        console.error('Error deleting item:', data)
         res.status(response.status).json(data)
       }
     } catch (error) {
+      console.error('Error in removeItem:', error)
       next(error)
     }
   }

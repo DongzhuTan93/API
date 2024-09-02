@@ -178,21 +178,16 @@ export class ItemsController {
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
   async updateTheWholeItem (req, res, next) {
-    if (!req.body.itemName && !req.body.itemPrice && !req.body.description && !req.body.category) {
-      const error = new Error('Missing required fields.')
-      error.status = 400
-      return next(error)
-    }
-
     try {
-      // Find the item by itemId and verify that the userId matches the logged-in user's id.
-      const item = await ItemsModel.findOne({ _id: req.params.itemId, itemId: req.user.userID }) // Find the update item with items unique object id and the specific users id.
+      const userID = req.headers['x-user-id']
+      console.log(`Attempting to update item ${req.params.itemId} for user ${userID}`)
 
-      if (!item) {
-      // If the item is not found or the userId does not match, return a 404 error.
-        const error = new Error('The requested resource was not found or you do not have permission to update it.')
-        error.status = 404
-        return next(error)
+      if (!userID) {
+        return res.status(401).json({ message: 'User ID not provided' })
+      }
+
+      if (!req.body.itemName || !req.body.itemPrice || !req.body.description || !req.body.category) {
+        return res.status(400).json({ message: 'Missing required fields.' })
       }
 
       const category = await CategoryModel.findOne({ name: req.body.category })
@@ -200,20 +195,33 @@ export class ItemsController {
         return res.status(400).json({ message: 'Invalid category' })
       }
 
-      // Update local database only after a successful update on the remote server.
-      const updateItem = await ItemsModel.findByIdAndUpdate(req.params.itemId, {
-        itemName: req.body.itemName,
-        itemPrice: req.body.itemPrice,
-        description: req.body.description,
-        category: category._id
-      },
-      { new: true }
+      // Find the item first to check if it exists and belongs to the user
+      const existingItem = await ItemsModel.findOne({
+        _id: req.params.itemId,
+        itemId: userID
+      })
+
+      if (!existingItem) {
+        console.log(`Item ${req.params.itemId} not found or does not belong to user ${userID}`)
+        return res.status(404).json({ message: 'Item not found or you do not have permission to update it.' })
+      }
+
+      // If the item exists and belongs to the user, update it
+      const updateItem = await ItemsModel.findOneAndUpdate(
+        { _id: req.params.itemId, itemId: userID },
+        {
+          itemName: req.body.itemName,
+          itemPrice: req.body.itemPrice,
+          description: req.body.description,
+          category: category._id
+        },
+        { new: true }
       )
 
-      console.log('update document:' + updateItem)
-
+      console.log('Updated item:', updateItem)
       res.status(200).json(updateItem)
     } catch (error) {
+      console.error('Error in updateTheWholeItem:', error)
       next(error)
     }
   }
@@ -266,16 +274,27 @@ export class ItemsController {
    */
   async deleteOneItem (req, res, next) {
     try {
-      const deletedItem = await ItemsModel.findOneAndDelete(
-        { _id: req.params.itemId, itemId: req.user.userID }
-      )
+      const userID = req.headers['x-user-id']
+      console.log(`Attempting to delete item ${req.params.itemId} for user ${userID}`)
+
+      if (!userID) {
+        return res.status(401).json({ message: 'User ID not provided' })
+      }
+
+      const deletedItem = await ItemsModel.findOneAndDelete({
+        _id: req.params.itemId,
+        itemId: userID
+      })
 
       if (!deletedItem) {
+        console.log(`Item ${req.params.itemId} not found or does not belong to user ${userID}`)
         return res.status(404).json({ message: 'Item not found or you do not have permission to delete it.' })
       }
 
+      console.log(`Item ${req.params.itemId} successfully deleted`)
       res.status(204).send()
     } catch (error) {
+      console.error('Error in deleteOneItem:', error)
       next(error)
     }
   }
