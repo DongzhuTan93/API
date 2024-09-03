@@ -142,7 +142,7 @@ export class ItemsController {
   }
 
   /**
-   * Show the specific item with its id.
+   * Show the specific item with its id, returning only specified fields.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -151,19 +151,28 @@ export class ItemsController {
    */
   async showItemWithId (req, res, next) {
     try {
-      // Using 'itemId' field to find the document.
       const item = await ItemsModel.findById(req.params.itemId)
+        .select('itemName itemPrice description category createdAt updatedAt')
+        .populate('category', 'name')
 
       if (!item) {
-      // If the item document is not found, return a 404 Not Found response.
         const error = new Error('Item not found.')
         error.status = 404
         return next(error)
       }
 
-      // Add Cache-Control header
+      const formattedItem = {
+        itemName: item.itemName,
+        itemPrice: item.itemPrice,
+        description: item.description,
+        category: item.category.name,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt
+      }
+
+      // Add Cache-Control header.
       res.set('Cache-Control', 'public, max-age=300') // Cache for 5 minutes.
-      res.status(200).json(item)
+      res.status(200).json(formattedItem)
     } catch (error) {
       next(error)
     }

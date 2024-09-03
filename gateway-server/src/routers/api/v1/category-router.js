@@ -13,8 +13,7 @@ export const router = express.Router()
 const gatewayCategoryController = new GatewayCategoryController()
 
 // Public routes.
-router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the category!!"}' }))
-router.get('/show', (req, res, next) => gatewayCategoryController.fetchAllCategories(req, res, next))
+router.get('/', (req, res, next) => gatewayCategoryController.fetchAllCategories(req, res, next))
 router.get('/:categoryName', (req, res, next) => gatewayCategoryController.fetchCategoryWithItems(req, res, next))
 router.get('/id/:id', (req, res, next) => gatewayCategoryController.getCategoryById(req, res, next))
 

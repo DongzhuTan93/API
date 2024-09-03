@@ -142,7 +142,7 @@ export class AccountController {
   }
 
   /**
-   * Retrieves all users (admin only).
+   * Retrieves all users.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -150,8 +150,8 @@ export class AccountController {
    */
   async getAllUsers (req, res, next) {
     try {
-      // Fetch all users from the database, excluding the password field
-      const users = await UserModel.find({}, '-password')
+      // Fetch all users from the database, including only username and email.
+      const users = await UserModel.find({}, 'username email')
 
       if (users.length === 0) {
         res.status(200).json({
@@ -165,7 +165,7 @@ export class AccountController {
         message: 'All users retrieved successfully.'
       })
     } catch (error) {
-      console.error('Error in getAllUsers:', error)
+      console.error('Error in listUsers:', error)
       next(createError(500, 'An error occurred while retrieving users'))
     }
   }

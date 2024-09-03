@@ -16,8 +16,7 @@ const gatewayItemsController = new GatewayItemsController()
 router.param('id', (req, res, next, id) => gatewayItemsController.loadItemsDocument(req, res, next, id))
 
 // Public routes.
-router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the items!!"}' }))
-router.get('/show', (req, res, next) => gatewayItemsController.fetchAllItems(req, res, next))
+router.get('/', (req, res, next) => gatewayItemsController.fetchAllItems(req, res, next))
 router.get('/:itemId', (req, res, next) => gatewayItemsController.fetchItemById(req, res, next))
 
 // Protected routes.
