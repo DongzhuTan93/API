@@ -72,6 +72,8 @@ export class GatewayItemsController {
         })
       }
 
+      // Fetch users for all items.
+
       const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
         headers: { Authorization: req.headers.authorization }
       })
@@ -84,13 +86,13 @@ export class GatewayItemsController {
           ...item,
           seller: user
             ? {
-                id: user.id,
                 username: user.username,
                 email: user.email
               }
             : null,
           _links: {
-            creator: user
+            self: { href: `${req.protocol}://${req.get('host')}/api/v1/items/${item.id}` },
+            seller: user
               ? { href: `${req.protocol}://${req.get('host')}/api/v1/auth/users/${user.id}` }
               : null
           }

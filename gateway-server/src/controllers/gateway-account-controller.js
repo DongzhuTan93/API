@@ -120,4 +120,26 @@ export class GatewayAccountController {
       next(error)
     }
   }
+
+  /**
+   * Get user information from gateway.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async getUserInfo (req, res, next) {
+    try {
+      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/users/${req.params.userId}`)
+      const data = await response.json()
+
+      if (response.ok) {
+        res.status(200).json(data)
+      } else {
+        res.status(response.status).json(data)
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
 }

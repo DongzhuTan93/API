@@ -17,6 +17,7 @@ router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the au
 router.post('/register', (req, res, next) => gatewayAccountController.registerUser(req, res, next))
 router.post('/register-admin', (req, res, next) => gatewayAccountController.registerAdmin(req, res, next))
 router.post('/login', (req, res, next) => gatewayAccountController.authenticateUser(req, res, next))
+router.get('/users/:userId', (req, res, next) => gatewayAccountController.getUserInfo(req, res, next))
 
 // Protected routes.
 router.post('/logout', authenticateJWT, (req, res, next) => gatewayAccountController.logoutUser(req, res, next))

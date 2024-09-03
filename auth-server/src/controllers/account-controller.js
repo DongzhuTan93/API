@@ -169,4 +169,29 @@ export class AccountController {
       next(createError(500, 'An error occurred while retrieving users'))
     }
   }
+
+  /**
+   * Get user information.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async getUserInfo (req, res, next) {
+    try {
+      const user = await UserModel.findById(req.params.userId).select('-password')
+      if (!user) {
+        res.status(404).json({ message: 'User not found' })
+      }
+      res.status(200).json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
 }
