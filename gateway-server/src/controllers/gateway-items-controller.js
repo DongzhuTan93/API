@@ -73,7 +73,6 @@ export class GatewayItemsController {
       }
 
       // Fetch users for all items.
-
       const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
         headers: { Authorization: req.headers.authorization }
       })
@@ -83,7 +82,10 @@ export class GatewayItemsController {
       const itemsWithDetails = data.items.map(item => {
         const user = usersMap.get(item.itemId)
         return {
-          ...item,
+          name: item.itemName,
+          price: item.itemPrice,
+          description: item.description,
+          createdAt: item.createdAt,
           seller: user
             ? {
                 username: user.username,
@@ -91,10 +93,7 @@ export class GatewayItemsController {
               }
             : null,
           _links: {
-            self: { href: `${req.protocol}://${req.get('host')}/api/v1/items/${item.id}` },
-            seller: user
-              ? { href: `${req.protocol}://${req.get('host')}/api/v1/auth/users/${user.id}` }
-              : null
+            self: { href: `${req.protocol}://${req.get('host')}/api/v1/items/${item._id}` }
           }
         }
       })

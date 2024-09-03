@@ -21,11 +21,59 @@ export class GatewayCategoryController {
    */
   async fetchAllCategories (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories`)
-      const data = await response.json()
+      // Fetch all categories
+      const categoriesResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/show`)
+      const categoriesData = await categoriesResponse.json()
 
-      res.status(response.status).json(data)
+      if (!categoriesData || !categoriesData.categories) {
+        return res.status(200).json({
+          categories: [],
+          message: 'No categories found or invalid response from items server',
+          _links: {
+            self: { href: `${req.protocol}://${req.get('host')}${req.originalUrl}` }
+          }
+        })
+      }
+
+      // Fetch all items.
+      const itemsResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/show`)
+      const itemsData = await itemsResponse.json()
+
+      // Fetch all users.
+      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+        headers: { Authorization: req.headers.authorization }
+      })
+      const usersData = await usersResponse.json()
+      const usersMap = new Map(usersData.users.map(user => [user.id, user]))
+
+      // Group items by category.
+      const itemsByCategory = itemsData.items.reduce((acc, item) => {
+        if (!acc[item.category]) {
+          acc[item.category] = []
+        }
+        const seller = usersMap.get(item.itemId)
+        acc[item.category].push({
+          name: item.itemName,
+          seller: seller ? seller.username : 'Unknown'
+        })
+        return acc
+      }, {})
+
+      // Combine categories with their items.
+      const categoriesWithItems = categoriesData.categories.map(category => ({
+        name: category.name,
+        items: itemsByCategory[category._id] || []
+      }))
+
+      res.status(200).json({
+        categories: categoriesWithItems,
+        message: 'Categories with items fetched successfully',
+        _links: {
+          self: { href: `${req.protocol}://${req.get('host')}${req.originalUrl}` }
+        }
+      })
     } catch (error) {
+      console.error('Error in fetchAllCategories:', error)
       next(error)
     }
   }
