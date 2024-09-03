@@ -58,11 +58,55 @@ export class GatewayItemsController {
    */
   async fetchAllItems (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items`)
+      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/show`)
       const data = await response.json()
 
-      res.status(response.status).json(data)
+      if (!data || !data.items) {
+        return res.status(200).json({
+          items: [],
+          message: 'No items found or invalid response from items server',
+          _links: {
+            self: { href: `${req.protocol}://${req.get('host')}${req.originalUrl}` },
+            createItem: { href: `${req.protocol}://${req.get('host')}/api/v1/items/create`, method: 'POST' }
+          }
+        })
+      }
+
+      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+        headers: { Authorization: req.headers.authorization }
+      })
+      const usersData = await usersResponse.json()
+      const usersMap = new Map(usersData.users.map(user => [user.id, user]))
+
+      const itemsWithDetails = data.items.map(item => {
+        const user = usersMap.get(item.itemId)
+        return {
+          ...item,
+          seller: user
+            ? {
+                id: user.id,
+                username: user.username,
+                email: user.email
+              }
+            : null,
+          _links: {
+            creator: user
+              ? { href: `${req.protocol}://${req.get('host')}/api/v1/auth/users/${user.id}` }
+              : null
+          }
+        }
+      })
+
+      res.status(200).json({
+        items: itemsWithDetails,
+        message: data.message || 'Items fetching successful!',
+        _links: {
+          self: { href: `${req.protocol}://${req.get('host')}${req.originalUrl}` },
+          createItem: { href: `${req.protocol}://${req.get('host')}/api/v1/items/create`, method: 'POST' }
+        }
+      })
     } catch (error) {
+      console.error('Error in fetchAllItems:', error)
       next(error)
     }
   }
