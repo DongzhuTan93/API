@@ -19,7 +19,7 @@ export class GatewayCategoryController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async fetchAllCategories (req, res, next) {
+  async listCategories (req, res, next) {
     try {
       // Fetch all categories
       const categoriesResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/show`)
@@ -86,7 +86,7 @@ export class GatewayCategoryController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async createNewCategory (req, res, next) {
+  async addCategory (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/create`, {
         method: 'POST',
@@ -121,7 +121,7 @@ export class GatewayCategoryController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async getCategoryById (req, res, next) {
+  async retrieveCategory (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/${req.params.id}`)
 
@@ -148,7 +148,7 @@ export class GatewayCategoryController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async fetchCategoryWithItems (req, res, next) {
+  async listCategoryItems (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/${req.params.categoryName}`)
       const data = await response.json()

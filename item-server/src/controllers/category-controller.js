@@ -21,7 +21,7 @@ export class CategoryController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async getAllCategories (req, res, next) {
+  async listCategories (req, res, next) {
     try {
       const categories = {
         categories: (await CategoryModel.find()).map(item => item.toObject()),
@@ -44,7 +44,7 @@ export class CategoryController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async createCategory (req, res, next) {
+  async addCategory (req, res, next) {
     try {
       const { name } = req.body
       const category = new CategoryModel({ name })
@@ -63,7 +63,7 @@ export class CategoryController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async getCategoryById (req, res, next) {
+  async retrieveCategory (req, res, next) {
     try {
       const category = await CategoryModel.findById(req.params.id)
       if (!category) {
@@ -82,7 +82,7 @@ export class CategoryController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getCategoryWithItems (req, res, next) {
+  async listCategoryItems (req, res, next) {
     try {
       const categoryName = req.params.categoryName
 

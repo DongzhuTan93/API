@@ -12,11 +12,11 @@ export const router = express.Router()
 const accountController = new AccountController()
 
 // Public routes.
-router.post('/register', (req, res, next) => accountController.register(req, res, next))
-router.post('/register-admin', (req, res, next) => accountController.registerAdmin(req, res, next))
-router.post('/login', (req, res, next) => accountController.login(req, res, next))
-router.post('/logout', (req, res, next) => accountController.logout(req, res, next))
-router.get('/users/:userId', (req, res, next) => accountController.getUserInfo(req, res, next))
+router.post('/users', (req, res, next) => accountController.addUser(req, res, next))
+router.post('/admins', (req, res, next) => accountController.addAdmin(req, res, next))
+router.post('/tokens', (req, res, next) => accountController.createToken(req, res, next))
+router.get('/users/:userId', (req, res, next) => accountController.retrieveUser(req, res, next))
 
-// Protected routes.
-router.get('/admin/users', (req, res, next) => accountController.getAllUsers(req, res, next))
+// Protected routes
+router.delete('/tokens', (req, res, next) => accountController.removeToken(req, res, next))
+router.get('/users', (req, res, next) => accountController.listUsers(req, res, next))

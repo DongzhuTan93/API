@@ -56,7 +56,7 @@ export class GatewayItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async fetchAllItems (req, res, next) {
+  async listItems (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/show`)
       const data = await response.json()
@@ -120,7 +120,7 @@ export class GatewayItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async fetchUserItems (req, res, next) {
+  async listUserItems (req, res, next) {
     try {
       if (!req.user || !req.user.userID) {
         return res.status(401).json({ message: 'User not authenticated or userID not found' })
@@ -154,7 +154,7 @@ export class GatewayItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async createNewItem (req, res, next) {
+  async addItem (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/create`, {
         method: 'POST',
@@ -183,7 +183,7 @@ export class GatewayItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async fetchItemById (req, res, next) {
+  async retrieveItem (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${req.params.itemId}`)
       const data = await response.json()
@@ -202,7 +202,7 @@ export class GatewayItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async updateEntireItem (req, res, next) {
+  async replaceItem (req, res, next) {
     try {
       if (!req.user || !req.user.userID) {
         return res.status(401).json({ message: 'User not authenticated or userID not found' })
@@ -242,7 +242,7 @@ export class GatewayItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async updateItemPartially (req, res, next) {
+  async modifyItem (req, res, next) {
     try {
       if (!req.user || !req.user.userID) {
         return res.status(401).json({ message: 'User not authenticated or userID not found' })
@@ -279,7 +279,7 @@ export class GatewayItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async removeItem (req, res, next) {
+  async deleteItem (req, res, next) {
     try {
       if (!req.user || !req.user.userID) {
         return res.status(401).json({ message: 'User not authenticated or userID not found' })
@@ -316,7 +316,7 @@ export class GatewayItemsController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async fetchAllUsersWithItems (req, res, next) {
+  async listUsersWithItems (req, res, next) {
     try {
       console.log('Fetching users from auth server...')
       const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {

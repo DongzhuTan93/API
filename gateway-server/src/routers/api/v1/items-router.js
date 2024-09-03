@@ -17,13 +17,13 @@ router.param('id', (req, res, next, id) => gatewayItemsController.loadItemsDocum
 
 // Public routes.
 router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the items!!"}' }))
-router.get('/show', (req, res, next) => gatewayItemsController.fetchAllItems(req, res, next))
-router.get('/:itemId', (req, res, next) => gatewayItemsController.fetchItemById(req, res, next))
+router.get('/items', (req, res, next) => gatewayItemsController.listItems(req, res, next))
+router.get('/items/:itemId', (req, res, next) => gatewayItemsController.retrieveItem(req, res, next))
 
 // Protected routes.
-router.get('/user/items', authenticateJWT, (req, res, next) => gatewayItemsController.fetchUserItems(req, res, next))
-router.post('/create', authenticateJWT, (req, res, next) => gatewayItemsController.createNewItem(req, res, next))
-router.put('/:itemId', authenticateJWT, (req, res, next) => gatewayItemsController.updateEntireItem(req, res, next))
-router.patch('/:itemId', authenticateJWT, (req, res, next) => gatewayItemsController.updateItemPartially(req, res, next))
-router.delete('/:itemId', authenticateJWT, (req, res, next) => gatewayItemsController.removeItem(req, res, next))
-router.get('/admin/users-with-items', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayItemsController.fetchAllUsersWithItems(req, res, next))
+router.get('/users/:userId/items', authenticateJWT, (req, res, next) => gatewayItemsController.listUserItems(req, res, next))
+router.post('/items', authenticateJWT, (req, res, next) => gatewayItemsController.addItem(req, res, next))
+router.put('/items/:itemId', authenticateJWT, (req, res, next) => gatewayItemsController.replaceItem(req, res, next))
+router.patch('/items/:itemId', authenticateJWT, (req, res, next) => gatewayItemsController.modifyItem(req, res, next))
+router.delete('/items/:itemId', authenticateJWT, (req, res, next) => gatewayItemsController.deleteItem(req, res, next))
+router.get('/users-with-items', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayItemsController.listUsersWithItems(req, res, next))

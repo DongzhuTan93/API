@@ -16,7 +16,7 @@ export class GatewayAccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async registerUser (req, res, next) {
+  async addUser (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/register`, {
         method: 'POST',
@@ -39,7 +39,7 @@ export class GatewayAccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async registerAdmin (req, res, next) {
+  async addAdmin (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/register-admin`, {
         method: 'POST',
@@ -62,7 +62,7 @@ export class GatewayAccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async authenticateUser (req, res, next) {
+  async createToken (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/login`, {
         method: 'POST',
@@ -85,7 +85,7 @@ export class GatewayAccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async logoutUser (req, res, next) {
+  async removeToken (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/logout`, {
         method: 'POST',
@@ -107,7 +107,7 @@ export class GatewayAccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async fetchAllUsers (req, res, next) {
+  async listUsers (req, res, next) {
     try {
       const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
         headers: { Authorization: req.headers.authorization }

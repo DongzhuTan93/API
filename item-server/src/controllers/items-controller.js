@@ -57,7 +57,7 @@ export class ItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async getAllItems (req, res, next) {
+  async listItems (req, res, next) {
     try {
       const items = {
         items: (await ItemsModel.find()).map(item => item.toObject()),
@@ -80,7 +80,7 @@ export class ItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async showAllItemsFromUser (req, res, next) {
+  async retrieveItem (req, res, next) {
     try {
       const userId = req.params.userId
       const userItems = await ItemsModel.find({ itemId: userId })
@@ -108,7 +108,7 @@ export class ItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async createItem (req, res, next) {
+  async addItem (req, res, next) {
     if (!req.body.itemName && !req.body.itemPrice && !req.body.description && !req.body.category) {
       const error = new Error('Missing required fields.')
       error.status = 400
@@ -149,7 +149,7 @@ export class ItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async showItemWithId (req, res, next) {
+  async listUserItems (req, res, next) {
     try {
       // Using 'itemId' field to find the document.
       const item = await ItemsModel.findById(req.params.itemId)
@@ -177,7 +177,7 @@ export class ItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async updateTheWholeItem (req, res, next) {
+  async replaceItem (req, res, next) {
     try {
       const userID = req.headers['x-user-id']
       console.log(`Attempting to update item ${req.params.itemId} for user ${userID}`)
@@ -234,7 +234,7 @@ export class ItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async partialUpdateOneItem (req, res, next) {
+  async modifyItem (req, res, next) {
     try {
       const userID = req.headers['x-user-id'] // Get the user ID from the custom header
 
@@ -272,7 +272,7 @@ export class ItemsController {
    * @param {Function} next - Express next middleware function.
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
-  async deleteOneItem (req, res, next) {
+  async deleteItem (req, res, next) {
     try {
       const userID = req.headers['x-user-id']
       console.log(`Attempting to delete item ${req.params.itemId} for user ${userID}`)
@@ -306,7 +306,7 @@ export class ItemsController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getAllUsersWithItems (req, res, next) {
+  async listUsersWithItems (req, res, next) {
     try {
       // Fetch all users from auth server
       const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {

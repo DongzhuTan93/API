@@ -21,7 +21,7 @@ export class AccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async register (req, res, next) {
+  async addUser (req, res, next) {
     try {
       const { username, password, firstName, lastName, email } = req.body
 
@@ -48,7 +48,7 @@ export class AccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async registerAdmin (req, res, next) {
+  async addAdmin (req, res, next) {
     console.log('hej från registerAdmin')
     try {
       const { username, password, firstName, lastName, email, adminSecret } = req.body
@@ -82,7 +82,7 @@ export class AccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async login (req, res, next) {
+  async createToken (req, res, next) {
     try {
       const userDocument = await UserModel.authenticate(req.body.username, req.body.password)
 
@@ -132,7 +132,7 @@ export class AccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async logout (req, res, next) {
+  async removeToken (req, res, next) {
     try {
       res.clearCookie('jwtToken')
       res.status(200).json({ message: 'Logged out successfully' })
@@ -148,7 +148,7 @@ export class AccountController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getAllUsers (req, res, next) {
+  async listUsers (req, res, next) {
     try {
       // Fetch all users from the database, excluding the password field
       const users = await UserModel.find({}, '-password')
@@ -171,13 +171,13 @@ export class AccountController {
   }
 
   /**
-   * Get user information.
+   * Retrieve one users information.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getUserInfo (req, res, next) {
+  async retrieveUser (req, res, next) {
     try {
       const user = await UserModel.findById(req.params.userId).select('-password')
       if (!user) {

@@ -14,11 +14,11 @@ const gatewayAccountController = new GatewayAccountController()
 
 // Public routes.
 router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the auth!"}' }))
-router.post('/register', (req, res, next) => gatewayAccountController.registerUser(req, res, next))
-router.post('/register-admin', (req, res, next) => gatewayAccountController.registerAdmin(req, res, next))
-router.post('/login', (req, res, next) => gatewayAccountController.authenticateUser(req, res, next))
+router.post('/users', (req, res, next) => gatewayAccountController.addUser(req, res, next))
+router.post('/admins', (req, res, next) => gatewayAccountController.addAdmin(req, res, next))
+router.post('/tokens', (req, res, next) => gatewayAccountController.createToken(req, res, next))
 router.get('/users/:userId', (req, res, next) => gatewayAccountController.getUserInfo(req, res, next))
 
 // Protected routes.
-router.post('/logout', authenticateJWT, (req, res, next) => gatewayAccountController.logoutUser(req, res, next))
-router.get('/admin/users', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayAccountController.fetchAllUsers(req, res, next))
+router.delete('/tokens', authenticateJWT, (req, res, next) => gatewayAccountController.removeToken(req, res, next))
+router.get('/users', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayAccountController.listUsers(req, res, next))
