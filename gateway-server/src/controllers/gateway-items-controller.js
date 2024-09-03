@@ -58,7 +58,7 @@ export class GatewayItemsController {
    */
   async fetchAllItems (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/show`)
+      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/`)
       const data = await response.json()
 
       if (!data || !data.items) {

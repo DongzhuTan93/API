@@ -13,7 +13,6 @@ export const router = express.Router()
 const gatewayAccountController = new GatewayAccountController()
 
 // Public routes.
-router.get('/', (req, res) => res.json({ message: '{"message":"Welcome to the auth!"}' }))
 router.post('/register', (req, res, next) => gatewayAccountController.registerUser(req, res, next))
 router.post('/register-admin', (req, res, next) => gatewayAccountController.registerAdmin(req, res, next))
 router.post('/login', (req, res, next) => gatewayAccountController.authenticateUser(req, res, next))

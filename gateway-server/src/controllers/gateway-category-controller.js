@@ -22,7 +22,7 @@ export class GatewayCategoryController {
   async fetchAllCategories (req, res, next) {
     try {
       // Fetch all categories
-      const categoriesResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/show`)
+      const categoriesResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories`)
       const categoriesData = await categoriesResponse.json()
 
       if (!categoriesData || !categoriesData.categories) {
@@ -36,7 +36,7 @@ export class GatewayCategoryController {
       }
 
       // Fetch all items.
-      const itemsResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/show`)
+      const itemsResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items`)
       const itemsData = await itemsResponse.json()
 
       // Fetch all users.

@@ -14,7 +14,7 @@ const itemsController = new ItemsController()
 // Middleware to load a task document if :id is present.
 router.param('id', (req, res, next, id) => itemsController.loadItemsDocument(req, res, next, id))
 
-router.get('/show', (req, res, next) => itemsController.getAllItems(req, res, next))
+router.get('/', (req, res, next) => itemsController.getAllItems(req, res, next))
 router.get('/:itemId', (req, res, next) => itemsController.showItemWithId(req, res, next))
 router.get('/user/:userId/items', (req, res, next) => itemsController.showAllItemsFromUser(req, res, next))
 router.post('/create', (req, res, next) => itemsController.createItem(req, res, next))
