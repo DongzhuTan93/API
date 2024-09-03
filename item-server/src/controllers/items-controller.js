@@ -73,7 +73,7 @@ export class ItemsController {
   }
 
   /**
-   * Displays a list of items from a specific user.
+   * Displays a list of items from a specific user, with different detail levels based on user role.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -83,14 +83,33 @@ export class ItemsController {
   async showAllItemsFromUser (req, res, next) {
     try {
       const userId = req.params.userId
+      const isAdmin = req.user && req.user.role === 'admin'
+
       const userItems = await ItemsModel.find({ itemId: userId })
 
       if (userItems.length === 0) {
         return res.status(404).json({ message: 'No items found for this user.' })
       }
 
+      const formattedItems = userItems.map(item => {
+        if (isAdmin) {
+          // Admin sees all details.
+          return item.toObject()
+        } else {
+          // Regular users see limited details.
+          return {
+            itemName: item.itemName,
+            itemPrice: item.itemPrice,
+            description: item.description,
+            category: item.category,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt
+          }
+        }
+      })
+
       const viewItemData = {
-        items: userItems.map(item => item.toObject()),
+        items: formattedItems,
         message: 'User items fetching successful!'
       }
 
