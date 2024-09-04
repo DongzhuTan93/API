@@ -39,29 +39,21 @@ export class GatewayCategoryController {
       const itemsResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items`)
       const itemsData = await itemsResponse.json()
 
-      // Fetch all users.
-      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
-        headers: { Authorization: req.headers.authorization }
-      })
-      const usersData = await usersResponse.json()
-      const usersMap = new Map(usersData.users.map(user => [user.id, user]))
-
       // Group items by category.
       const itemsByCategory = itemsData.items.reduce((acc, item) => {
         if (!acc[item.category]) {
           acc[item.category] = []
         }
-        const seller = usersMap.get(item.itemId)
         acc[item.category].push({
-          name: item.itemName,
-          seller: seller ? seller.username : 'Unknown'
+          itemName: item.itemName,
+          link: `http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${item._id}`
         })
         return acc
       }, {})
 
       // Combine categories with their items.
       const categoriesWithItems = categoriesData.categories.map(category => ({
-        name: category.name,
+        categoryName: category.name,
         items: itemsByCategory[category._id] || []
       }))
 

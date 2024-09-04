@@ -94,9 +94,6 @@ export class AccountController {
         userID: userDocument.id,
         username: userDocument.username,
         role: userDocument.role
-        // This change assumes that userDocument.id contains the user's unique identifier, which is often a better choice for the payload in a JWT.
-        // Using the user ID (often a numeric or UUID value) is more stable, as usernames might change, but IDs generally do not.
-        // Additionally, using the ID can enhance privacy and security, as it avoids exposing the username in the token payload. Make sure that the rest of your system is capable of handling the user ID instead of the username wherever necessary.
       }
 
       // Create the access token with the shorter lifespan.
