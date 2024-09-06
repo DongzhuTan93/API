@@ -21,4 +21,5 @@ router.post('/create', (req, res, next) => itemsController.createItem(req, res, 
 router.put('/:itemId', (req, res, next) => itemsController.updateTheWholeItem(req, res, next))
 router.patch('/:itemId', (req, res, next) => itemsController.partialUpdateOneItem(req, res, next))
 router.delete('/:itemId', (req, res, next) => itemsController.deleteOneItem(req, res, next))
+
 router.get('/admin/users-with-items', (req, res, next) => itemsController.getAllUsersWithItems(req, res, next))

@@ -264,7 +264,7 @@ export class ItemsController {
    */
   async partialUpdateOneItem (req, res, next) {
     try {
-      const userID = req.headers['x-user-id'] // Get the user ID from the custom header
+      const userID = req.headers['x-user-id'] // Get the user ID from the custom header.
 
       if (!userID) {
         return res.status(401).json({ message: 'User ID not provided' })

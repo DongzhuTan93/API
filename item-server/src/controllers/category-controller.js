@@ -84,10 +84,8 @@ export class CategoryController {
    */
   async getCategoryWithItems (req, res, next) {
     try {
-      const categoryName = req.params.categoryName
-
       // Find the category by name.
-      const category = await CategoryModel.findOne({ name: categoryName })
+      const category = await CategoryModel.findOne({ name: req.params.categoryName })
 
       if (!category) {
         res.status(404).json({ message: 'Category not found' })
@@ -110,6 +108,28 @@ export class CategoryController {
       // Add Cache-Control header.
       res.set('Cache-Control', 'public, max-age=300') // Cache for 5 minutes without needing to request it again from server.
       res.json(response)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * Delete the specify category with items.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
+   */
+  async deleteCategory (req, res, next) {
+    try {
+      const category = await CategoryModel.findOneAndDelete({ name: req.params.categoryName })
+
+      if (!category) {
+        return res.status(404).json({ message: 'Category not found' })
+      }
+
+      res.status(204).send()
     } catch (error) {
       next(error)
     }

@@ -57,7 +57,7 @@ export const authenticateJWT = async (req, res, next) => {
 }
 
 /**
- * Check if it is a admin account.
+ * Authenticate if it is a Admin.
  *
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
@@ -67,6 +67,6 @@ export const authenticateAdmin = (req, res, next) => {
   if (req.user && req.user.role === 'admin') {
     next()
   } else {
-    res.status(403).json({ message: 'Access denied. Admin role required.' })
+    res.status(403).json({ message: 'Access denied. Admin access required.' })
   }
 }

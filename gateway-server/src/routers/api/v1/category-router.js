@@ -19,3 +19,4 @@ router.get('/id/:id', (req, res, next) => gatewayCategoryController.getCategoryB
 
 // Protected routes.
 router.post('/create', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayCategoryController.createNewCategory(req, res, next))
+router.delete('/:categoryName', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayCategoryController.deleteCategory(req, res, next))

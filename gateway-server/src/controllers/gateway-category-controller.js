@@ -150,4 +150,32 @@ export class GatewayCategoryController {
       next(error)
     }
   }
+
+  /**
+   * Delete category with items.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async deleteCategory (req, res, next) {
+    try {
+      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/${req.params.categoryName}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: req.headers.authorization,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        res.status(response.status).json(errorData)
+      }
+
+      res.status(204).send()
+    } catch (error) {
+      next(error)
+    }
+  }
 }
