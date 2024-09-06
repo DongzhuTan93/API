@@ -79,28 +79,6 @@ export class GatewayAccountController {
   }
 
   /**
-   * User logout from application.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  async logoutUser (req, res, next) {
-    try {
-      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/logout`, {
-        method: 'POST',
-        headers: { Authorization: req.headers.authorization }
-      })
-
-      const data = await response.json()
-
-      res.status(response.status).json(data)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  /**
    * Retrieves all users (admin only).
    *
    * @param {object} req - Express request object.

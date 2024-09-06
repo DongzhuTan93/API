@@ -123,22 +123,6 @@ export class AccountController {
   }
 
   /**
-   * User logout from application.
-   *
-   * @param {object} req - Express request object.
-   * @param {object} res - Express response object.
-   * @param {Function} next - Express next middleware function.
-   */
-  async logout (req, res, next) {
-    try {
-      res.clearCookie('jwtToken')
-      res.status(200).json({ message: 'Logged out successfully' })
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  /**
    * Retrieves all users.
    *
    * @param {object} req - Express request object.

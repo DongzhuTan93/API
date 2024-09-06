@@ -19,5 +19,4 @@ router.post('/login', (req, res, next) => gatewayAccountController.authenticateU
 router.get('/users/:userId', (req, res, next) => gatewayAccountController.getUserInfo(req, res, next))
 
 // Protected routes.
-router.post('/logout', authenticateJWT, (req, res, next) => gatewayAccountController.logoutUser(req, res, next))
 router.get('/admin/users', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayAccountController.fetchAllUsers(req, res, next))
