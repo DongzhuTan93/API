@@ -64,6 +64,7 @@ export const authenticateJWT = async (req, res, next) => {
  * @param {Function} next - Express next middleware function.
  */
 export const authenticateAdmin = (req, res, next) => {
+  console.log('User role:', req.user.role)
   if (req.user && req.user.role === 'admin') {
     next()
   } else {

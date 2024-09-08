@@ -60,36 +60,47 @@ export class ManageItemsController {
   async getAllItems (req, res, next) {
     try {
       const { category, minPrice, maxPrice, page = 1, limit = 10 } = req.query
-      const skip = (page - 1) * limit
+      const skip = (page - 1) * parseInt(limit)
 
       const query = {}
-      if (category) query.category = category
-      if (minPrice || maxPrice) {
-        query.itemPrice = {}
-        if (minPrice) query.itemPrice.$gte = minPrice
-        if (maxPrice) query.itemPrice.$lte = maxPrice
+      // Apply filters only if they are provided
+      if (category) {
+        const categoryDoc = await CategoryModel.findOne({ name: category })
+        if (categoryDoc) {
+          query.category = categoryDoc._id
+        }
       }
 
-      const items = await ItemsModel.find(query)
+      let items = await ItemsModel.find(query)
         .skip(skip)
         .limit(parseInt(limit))
         .lean()
 
-      const totalItems = await ItemsModel.countDocuments(query)
-      const totalPages = Math.ceil(totalItems / limit)
+      // Apply price filtering if provided
+      if (minPrice || maxPrice) {
+        items = items.filter(item => {
+          const numericPrice = parseFloat(item.itemPrice)
+          return (!isNaN(numericPrice) &&
+          (!minPrice || numericPrice >= parseFloat(minPrice)) &&
+          (!maxPrice || numericPrice <= parseFloat(maxPrice)))
+        })
+      }
+
+      // Sort items by price
+      items.sort((a, b) => parseFloat(a.itemPrice) - parseFloat(b.itemPrice))
+
+      const totalItems = items.length
+      const totalPages = Math.ceil(totalItems / parseInt(limit))
 
       res.status(200).json({
         items,
-        currentPage: page,
+        currentPage: parseInt(page),
         totalPages,
         totalItems,
-        message: 'Items fetching successful!'
+        message: items.length > 0 ? 'Items fetching successful!' : 'No items found matching the criteria'
       })
-
-      // Add Cache-Control header.
-      res.set('Cache-Control', 'public, max-age=300') // Cache for 5 minutes.
-      res.status(200).json(items)
     } catch (error) {
+      console.error('Error in getAllItems:', error)
       next(error)
     }
   }
@@ -150,6 +161,8 @@ export class ManageItemsController {
    * @returns {void} -Sends an HTTP response with status information but does not return a value explicitly.
    */
   async createItem (req, res, next) {
+    console.log('Received request to create item. Body:', req.body)
+
     if (!req.body.itemName && !req.body.itemPrice && !req.body.description && !req.body.category) {
       const error = new Error('Missing required fields.')
       error.status = 400
@@ -160,12 +173,13 @@ export class ManageItemsController {
       // Verify if the category exists.
       const category = await CategoryModel.findOne({ name: req.body.category })
       if (!category) {
+        console.log('Invalid category:', req.body.category)
         const error = new Error('Invalid category')
         error.status = 400
         return next(error)
       }
 
-      console.log(' category: ' + req.body.category)
+      console.log(' category found: ' + category)
 
       const itemDocument = await ItemsModel.create({
         itemName: req.body.itemName,

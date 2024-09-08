@@ -60,26 +60,19 @@ export class ManageItemsController {
     try {
       const { category, minPrice, maxPrice, page = 1, limit = 10 } = req.query
 
-      let response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/page=${page}&limit=${limit}`)
+      let url = `http://localhost:${process.env.ITEMS_SERVER_PORT}/items?page=${page}&limit=${limit}`
 
-      if (category) {
-        response += `&category=${category}`
-      }
+      if (category) url += `&category=${encodeURIComponent(category)}`
+      if (minPrice) url += `&minPrice=${minPrice}`
+      if (maxPrice) url += `&maxPrice=${maxPrice}`
 
-      if (minPrice) {
-        response += `&minPrice=${minPrice}`
-      }
-
-      if (maxPrice) {
-        response += `&maxPrice=${maxPrice}`
-      }
-
+      const response = await fetch(url)
       const data = await response.json()
 
-      if (!data || !data.items) {
+      if (!data || !data.items || data.items.length === 0) {
         return res.status(200).json({
           items: [],
-          message: 'No items found or invalid response from items server',
+          message: 'No items found matching the criteria',
           _links: {
             self: { href: `${req.protocol}://${req.get('host')}${req.originalUrl}` },
             createItem: { href: `${req.protocol}://${req.get('host')}/api/v1/items/create`, method: 'POST' }
@@ -115,6 +108,9 @@ export class ManageItemsController {
 
       res.status(200).json({
         items: itemsWithDetails,
+        currentPage: data.currentPage,
+        totalPages: data.totalPages,
+        totalItems: data.totalItems,
         message: data.message || 'Items fetching successful!',
         _links: {
           self: { href: `${req.protocol}://${req.get('host')}${req.originalUrl}` },
@@ -171,6 +167,9 @@ export class ManageItemsController {
    */
   async createNewItem (req, res, next) {
     try {
+      console.log('Creating new item. Request body:', req.body)
+      console.log('User ID:', req.user.userID)
+
       const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/create`, {
         method: 'POST',
         headers: {
@@ -183,6 +182,7 @@ export class ManageItemsController {
         })
       })
       const data = await response.json()
+      console.log('Response from items server:', response.status, data)
 
       res.status(response.status).json(data)
     } catch (error) {
