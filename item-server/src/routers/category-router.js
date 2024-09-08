@@ -6,12 +6,12 @@
  */
 
 import express from 'express'
-import { CategoryController } from '../controllers/category-controller.js'
+import { ManageCategoriesController } from '../controllers/manage-categories-controller.js'
 
 export const router = express.Router()
-const categoryController = new CategoryController()
+const manageCategoriesController = new ManageCategoriesController()
 
-router.get('/', (req, res, next) => categoryController.getAllCategories(req, res, next))
-router.get('/:categoryName', (req, res, next) => categoryController.getCategoryWithItems(req, res, next))
-router.post('/create', (req, res, next) => categoryController.createCategory(req, res, next))
-router.delete('/:categoryName', (req, res, next) => categoryController.deleteCategory(req, res, next))
+router.get('/', (req, res, next) => manageCategoriesController.getAllCategories(req, res, next))
+router.get('/:categoryName', (req, res, next) => manageCategoriesController.getCategoryWithItems(req, res, next))
+router.post('/create', (req, res, next) => manageCategoriesController.createCategory(req, res, next))
+router.delete('/:categoryName', (req, res, next) => manageCategoriesController.deleteCategory(req, res, next))

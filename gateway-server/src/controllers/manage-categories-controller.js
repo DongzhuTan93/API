@@ -1,5 +1,5 @@
 /**
- * Module for the GatewayCategoryController .
+ * Module for the ManageCategories controller class.
  *
  * @author Dongzhu Tan
  * @version 3.1.0
@@ -10,7 +10,7 @@ import fetch from 'node-fetch'
 /**
  * Encapsulates a controller.
  */
-export class GatewayCategoryController {
+export class ManageCategoriesController {
   /**
    * Displays a list of category at the store.
    *

@@ -1,6 +1,6 @@
 /**
- * @file Defines the GatewayAccountController class.
- * @module controllers/GatewayAccountController
+ * @file Defines the ManageAccounts controller class.
+ * @module controllers/ManageAccountsController
  * @author Dongzhu Tan
  * @version 3.1.0
  */
@@ -8,7 +8,7 @@
 /**
  * Encapsulates a controller.
  */
-export class GatewayAccountController {
+export class ManageAccountsController {
   /**
    * Registers a user.
    *

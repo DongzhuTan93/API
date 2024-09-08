@@ -5,15 +5,15 @@
  * @version 3.1.0
  */
 
-import { ItemsModel } from '../models/itemsModel.js'
-import { CategoryModel } from '../models/itemsCategoryModel.js'
+import { ItemsModel } from '../models/items-model.js'
+import { CategoryModel } from '../models/items-category-model.js'
 
 import mongoose from 'mongoose'
 
 /**
  * Encapsulates a controller.
  */
-export class ItemsController {
+export class ManageItemsController {
   /**
    * Provide req.doc to the route if :id is present, checking if a item exists before performing operations like update or delete.
    *
@@ -59,10 +59,32 @@ export class ItemsController {
    */
   async getAllItems (req, res, next) {
     try {
-      const items = {
-        items: (await ItemsModel.find()).map(item => item.toObject()),
-        message: 'Items fetching successful!'
+      const { category, minPrice, maxPrice, page = 1, limit = 10 } = req.query
+      const skip = (page - 1) * limit
+
+      const query = {}
+      if (category) query.category = category
+      if (minPrice || maxPrice) {
+        query.itemPrice = {}
+        if (minPrice) query.itemPrice.$gte = minPrice
+        if (maxPrice) query.itemPrice.$lte = maxPrice
       }
+
+      const items = await ItemsModel.find(query)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean()
+
+      const totalItems = await ItemsModel.countDocuments(query)
+      const totalPages = Math.ceil(totalItems / limit)
+
+      res.status(200).json({
+        items,
+        currentPage: page,
+        totalPages,
+        totalItems,
+        message: 'Items fetching successful!'
+      })
 
       // Add Cache-Control header.
       res.set('Cache-Control', 'public, max-age=300') // Cache for 5 minutes.

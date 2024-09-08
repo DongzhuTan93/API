@@ -5,14 +5,14 @@
  * @version 3.1.0
  */
 
-import { CategoryModel } from '../models/itemsCategoryModel.js'
-import { ItemsModel } from '../models/itemsModel.js'
+import { CategoryModel } from '../models/items-category-model.js'
+import { ItemsModel } from '../models/items-model.js'
 import createError from 'http-errors'
 
 /**
  * Encapsulates a controller.
  */
-export class CategoryController {
+export class ManageCategoriesController {
   /**
    * Displays a list of category at the store.
    *

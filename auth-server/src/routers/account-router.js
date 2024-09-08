@@ -6,16 +6,16 @@
  */
 
 import express from 'express'
-import { AccountController } from '../controllers/account-controller.js'
+import { ManageAccountsController } from '../controllers/manage-accounts-controller.js'
 
 export const router = express.Router()
-const accountController = new AccountController()
+const manageAccountsController = new ManageAccountsController()
 
 // Public routes.
-router.post('/register', (req, res, next) => accountController.register(req, res, next))
-router.post('/register-admin', (req, res, next) => accountController.registerAdmin(req, res, next))
-router.post('/login', (req, res, next) => accountController.login(req, res, next))
-router.get('/users/:userId', (req, res, next) => accountController.getUserInfo(req, res, next))
+router.post('/register', (req, res, next) => manageAccountsController.register(req, res, next))
+router.post('/register-admin', (req, res, next) => manageAccountsController.registerAdmin(req, res, next))
+router.post('/login', (req, res, next) => manageAccountsController.login(req, res, next))
+router.get('/users/:userId', (req, res, next) => manageAccountsController.getUserInfo(req, res, next))
 
 // Protected routes.
-router.get('/admin/users', (req, res, next) => accountController.getAllUsers(req, res, next))
+router.get('/admin/users', (req, res, next) => manageAccountsController.getAllUsers(req, res, next))

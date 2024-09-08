@@ -1,11 +1,11 @@
 /**
- * @file Defines the AccountController class.
- * @module controllers/AccountController
+ * @file Defines the ManageAccounts controller class.
+ * @module controllers/ManageAccountsController
  * @author Dongzhu Tan
  * @version 3.1.0
  */
 
-import { UserModel } from '../model/userModel.js'
+import { UserModel } from '../model/user-model.js'
 import createError from 'http-errors'
 import jwt from 'jsonwebtoken'
 import fs from 'fs/promises'
@@ -13,7 +13,7 @@ import fs from 'fs/promises'
 /**
  * Encapsulates a controller.
  */
-export class AccountController {
+export class ManageAccountsController {
   /**
    * Registers a user.
    *

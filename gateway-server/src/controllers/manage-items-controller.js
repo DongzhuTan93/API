@@ -1,5 +1,5 @@
 /**
- * Module for the GatewayItemsController.
+ * Module for the ManageItems controller class.
  *
  * @author Dongzhu Tan
  * @version 3.1.0
@@ -8,7 +8,7 @@
 /**
  * Encapsulates a controller.
  */
-export class GatewayItemsController {
+export class ManageItemsController {
   /**
    * Provide req.doc to the route if :id is present, checking if an item exists before performing operations like update or delete.
    *
@@ -58,7 +58,22 @@ export class GatewayItemsController {
    */
   async fetchAllItems (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/`)
+      const { category, minPrice, maxPrice, page = 1, limit = 10 } = req.query
+
+      let response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/page=${page}&limit=${limit}`)
+
+      if (category) {
+        response += `&category=${category}`
+      }
+
+      if (minPrice) {
+        response += `&minPrice=${minPrice}`
+      }
+
+      if (maxPrice) {
+        response += `&maxPrice=${maxPrice}`
+      }
+
       const data = await response.json()
 
       if (!data || !data.items) {

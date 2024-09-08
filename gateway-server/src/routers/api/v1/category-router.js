@@ -6,17 +6,17 @@
  */
 
 import express from 'express'
-import { GatewayCategoryController } from '../../../controllers/gateway-category-controller.js'
+import { ManageCategoriesController } from '../../../controllers/manage-categories-controller.js'
 import { authenticateJWT, authenticateAdmin } from '../../../middlewares/auth.js'
 
 export const router = express.Router()
-const gatewayCategoryController = new GatewayCategoryController()
+const manageCategoriesController = new ManageCategoriesController()
 
 // Public routes.
-router.get('/', (req, res, next) => gatewayCategoryController.fetchAllCategories(req, res, next))
-router.get('/:categoryName', (req, res, next) => gatewayCategoryController.fetchCategoryWithItems(req, res, next))
-router.get('/id/:id', (req, res, next) => gatewayCategoryController.getCategoryById(req, res, next))
+router.get('/', (req, res, next) => manageCategoriesController.fetchAllCategories(req, res, next))
+router.get('/:categoryName', (req, res, next) => manageCategoriesController.fetchCategoryWithItems(req, res, next))
+router.get('/id/:id', (req, res, next) => manageCategoriesController.getCategoryById(req, res, next))
 
 // Protected routes.
-router.post('/create', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayCategoryController.createNewCategory(req, res, next))
-router.delete('/:categoryName', authenticateJWT, authenticateAdmin, (req, res, next) => gatewayCategoryController.deleteCategory(req, res, next))
+router.post('/create', authenticateJWT, authenticateAdmin, (req, res, next) => manageCategoriesController.createNewCategory(req, res, next))
+router.delete('/:categoryName', authenticateJWT, authenticateAdmin, (req, res, next) => manageCategoriesController.deleteCategory(req, res, next))
