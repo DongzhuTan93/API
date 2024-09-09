@@ -131,6 +131,7 @@ export class ManageItemsController {
         } else {
           // Regular users see limited details.
           return {
+            itemObjectId: item._id,
             itemName: item.itemName,
             itemPrice: item.itemPrice,
             description: item.description,

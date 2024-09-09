@@ -4,6 +4,7 @@
  * @author Dongzhu Tan
  * @version 3.1.0
  */
+import { webhookManager } from '../utils/webhook-manager.js'
 
 /**
  * Encapsulates a controller.
@@ -279,6 +280,12 @@ export class ManageItemsController {
       }
 
       const data = await response.json()
+
+      // Trigger webhook for price change if the price was updated
+      if (req.body.itemPrice) {
+        await webhookManager.notifyPriceChange(req.params.itemId, req.body.itemPrice)
+      }
+
       res.status(200).json(data)
     } catch (error) {
       console.error('Error in updateItemPartially:', error)
