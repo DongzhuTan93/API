@@ -7,6 +7,9 @@
 
 import fetch from 'node-fetch'
 
+// Define the item base URL once.
+const BASE_ITEM_URL = `http://localhost:${process.env.ITEMS_SERVER_PORT}`
+
 /**
  * Encapsulates a controller.
  */
@@ -22,7 +25,7 @@ export class ManageCategoriesController {
   async fetchAllCategories (req, res, next) {
     try {
       // Fetch all categories
-      const categoriesResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories`)
+      const categoriesResponse = await fetch(`${BASE_ITEM_URL}/categories`)
       const categoriesData = await categoriesResponse.json()
 
       if (!categoriesData || !categoriesData.categories) {
@@ -36,7 +39,7 @@ export class ManageCategoriesController {
       }
 
       // Fetch all items.
-      const itemsResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items`)
+      const itemsResponse = await fetch(`${BASE_ITEM_URL}/items`)
       const itemsData = await itemsResponse.json()
 
       // Group items by category.
@@ -46,7 +49,7 @@ export class ManageCategoriesController {
         }
         acc[item.category].push({
           itemName: item.itemName,
-          link: `http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${item._id}`
+          link: `${BASE_ITEM_URL}/items/${item._id}`
         })
         return acc
       }, {})
@@ -80,7 +83,7 @@ export class ManageCategoriesController {
    */
   async createNewCategory (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/create`, {
+      const response = await fetch(`${BASE_ITEM_URL}/categories/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +118,7 @@ export class ManageCategoriesController {
    */
   async getCategoryById (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/${req.params.id}`)
+      const response = await fetch(`${BASE_ITEM_URL}/categories/${req.params.id}`)
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -142,7 +145,7 @@ export class ManageCategoriesController {
    */
   async fetchCategoryWithItems (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/${req.params.categoryName}`)
+      const response = await fetch(`${BASE_ITEM_URL}/categories/${req.params.categoryName}`)
       const data = await response.json()
 
       res.status(response.status).json(data)
@@ -160,7 +163,7 @@ export class ManageCategoriesController {
    */
   async deleteCategory (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/categories/${req.params.categoryName}`, {
+      const response = await fetch(`${BASE_ITEM_URL}/categories/${req.params.categoryName}`, {
         method: 'DELETE',
         headers: {
           Authorization: req.headers.authorization,

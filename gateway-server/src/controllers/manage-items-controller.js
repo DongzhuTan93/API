@@ -6,6 +6,11 @@
  */
 import { webhookManager } from '../utils/webhook-manager.js'
 
+// Define the item base URL once.
+const BASE_ITEM_URL = `http://localhost:${process.env.ITEMS_SERVER_PORT}`
+// Define the auth base URL once.
+const BASE_AUTH_URL = `http://localhost:${process.env.AUTH_SERVER_PORT}`
+
 /**
  * Encapsulates a controller.
  */
@@ -27,7 +32,7 @@ export class ManageItemsController {
     }
 
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${id}`)
+      const response = await fetch(`${BASE_ITEM_URL}/items/${id}`)
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -61,7 +66,7 @@ export class ManageItemsController {
     try {
       const { category, minPrice, maxPrice, page = 1, limit = 10 } = req.query
 
-      let url = `http://localhost:${process.env.ITEMS_SERVER_PORT}/items?page=${page}&limit=${limit}`
+      let url = `${BASE_ITEM_URL}/items?page=${page}&limit=${limit}`
 
       if (category) url += `&category=${encodeURIComponent(category)}`
       if (minPrice) url += `&minPrice=${minPrice}`
@@ -82,7 +87,7 @@ export class ManageItemsController {
       }
 
       // Fetch users for all items.
-      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+      const usersResponse = await fetch(`${BASE_AUTH_URL}/auth/admin/users`, {
         headers: { Authorization: req.headers.authorization }
       })
       const usersData = await usersResponse.json()
@@ -138,7 +143,7 @@ export class ManageItemsController {
         return res.status(401).json({ message: 'User not authenticated or userID not found' })
       }
 
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/user/${req.user.userID}/items`, {
+      const response = await fetch(`${BASE_ITEM_URL}/items/user/${req.user.userID}/items`, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -171,7 +176,7 @@ export class ManageItemsController {
       console.log('Creating new item. Request body:', req.body)
       console.log('User ID:', req.user.userID)
 
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/create`, {
+      const response = await fetch(`${BASE_ITEM_URL}/items/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -201,7 +206,7 @@ export class ManageItemsController {
    */
   async fetchItemById (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${req.params.itemId}`)
+      const response = await fetch(`${BASE_ITEM_URL}/items/${req.params.itemId}`)
       const data = await response.json()
 
       res.status(response.status).json(data)
@@ -226,7 +231,7 @@ export class ManageItemsController {
 
       console.log(`Updating item ${req.params.itemId} for user ${req.user.userID}`)
 
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${req.params.itemId}`, {
+      const response = await fetch(`${BASE_ITEM_URL}/items/${req.params.itemId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -264,7 +269,7 @@ export class ManageItemsController {
         return res.status(401).json({ message: 'User not authenticated or userID not found' })
       }
 
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${req.params.itemId}`, {
+      const response = await fetch(`${BASE_ITEM_URL}/items/${req.params.itemId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -309,7 +314,7 @@ export class ManageItemsController {
 
       console.log(`Attempting to delete item ${req.params.itemId} for user ${req.user.userID}`)
 
-      const response = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/${req.params.itemId}`, {
+      const response = await fetch(`${BASE_ITEM_URL}/items/${req.params.itemId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -341,7 +346,7 @@ export class ManageItemsController {
   async fetchAllUsersWithItems (req, res, next) {
     try {
       console.log('Fetching users from auth server...')
-      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+      const usersResponse = await fetch(`${BASE_AUTH_URL}/auth/admin/users`, {
         headers: {
           Authorization: req.headers.authorization
         }
@@ -357,7 +362,7 @@ export class ManageItemsController {
       console.log('Successfully fetched users from auth server')
 
       console.log('Fetching items for users from items server...')
-      const itemsResponse = await fetch(`http://localhost:${process.env.ITEMS_SERVER_PORT}/items/admin/users-with-items`, {
+      const itemsResponse = await fetch(`${BASE_ITEM_URL}/items/admin/users-with-items`, {
         headers: {
           Authorization: req.headers.authorization
         }

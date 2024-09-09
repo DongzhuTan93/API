@@ -5,6 +5,9 @@
  * @version 3.1.0
  */
 
+// Define the auth base URL once.
+const BASE_AUTH_URL = `http://localhost:${process.env.AUTH_SERVER_PORT}`
+
 /**
  * Encapsulates a controller.
  */
@@ -18,7 +21,7 @@ export class ManageAccountsController {
    */
   async registerUser (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/register`, {
+      const response = await fetch(`${BASE_AUTH_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(req.body)
@@ -41,7 +44,7 @@ export class ManageAccountsController {
    */
   async registerAdmin (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/register-admin`, {
+      const response = await fetch(`${BASE_AUTH_URL}/auth/register-admin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(req.body)
@@ -64,7 +67,7 @@ export class ManageAccountsController {
    */
   async authenticateUser (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/login`, {
+      const response = await fetch(`${BASE_AUTH_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(req.body)
@@ -87,7 +90,7 @@ export class ManageAccountsController {
    */
   async fetchAllUsers (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+      const response = await fetch(`${BASE_AUTH_URL}/auth/admin/users`, {
         headers: { Authorization: req.headers.authorization }
       })
 
@@ -108,7 +111,7 @@ export class ManageAccountsController {
    */
   async getUserInfo (req, res, next) {
     try {
-      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/users/${req.params.userId}`)
+      const response = await fetch(`${BASE_AUTH_URL}/auth/users/${req.params.userId}`)
       const data = await response.json()
 
       if (response.ok) {

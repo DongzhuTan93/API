@@ -7,8 +7,10 @@
 
 import { ItemsModel } from '../models/items-model.js'
 import { CategoryModel } from '../models/items-category-model.js'
-
 import mongoose from 'mongoose'
+
+// Define the auth base URL once.
+const BASE_AUTH_URL = `http://localhost:${process.env.AUTH_SERVER_PORT}`
 
 /**
  * Encapsulates a controller.
@@ -374,7 +376,7 @@ export class ManageItemsController {
   async getAllUsersWithItems (req, res, next) {
     try {
       // Fetch all users from auth server
-      const usersResponse = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users`, {
+      const usersResponse = await fetch(`${BASE_AUTH_URL}/auth/admin/users`, {
         headers: {
           Authorization: req.headers.authorization
         }
