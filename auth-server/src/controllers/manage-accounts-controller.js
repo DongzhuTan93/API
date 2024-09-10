@@ -71,6 +71,8 @@ export class ManageAccountsController {
 
       res.status(201).json({ message: 'Admin  registered successfully!' })
     } catch (error) {
+      console.log("catched err")
+      console.log(error)
       next(error)
     }
   }
