@@ -20,3 +20,4 @@ router.get('/users/:userId', (req, res, next) => manageAccountsController.getUse
 
 // Protected routes.
 router.get('/admin/users', authenticateJWT, authenticateAdmin, (req, res, next) => manageAccountsController.fetchAllUsers(req, res, next))
+router.delete('/admin/users/:userId', authenticateJWT, authenticateAdmin, (req, res, next) => manageAccountsController.deleteUser(req, res, next))

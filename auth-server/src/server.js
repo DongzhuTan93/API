@@ -62,7 +62,6 @@ try {
 
   // Error handler.
   app.use((err, req, res, next) => {
-    console.log("a")
     console.log(err)
     if (process.env.NODE_ENV === 'production') {
       // Ensure a valid status code is set for the error.
@@ -105,7 +104,6 @@ try {
     console.log('Press Ctrl-C to terminate...')
   })
 } catch (err) {
-  console.log("b")
   console.log(err)
   process.exitCode = 1
 }

@@ -57,7 +57,6 @@ try {
 
   // Error handler.
   app.use((err, req, res, next) => {
-    console.log("aaa")
     console.log(err)
     if (process.env.NODE_ENV === 'production') {
       if (!err.status) {
@@ -88,7 +87,6 @@ try {
     console.log('Press Ctrl-C to terminate...')
   })
 } catch (err) {
-  console.log("bb")
   console.log(err)
   process.exitCode = 1
 }

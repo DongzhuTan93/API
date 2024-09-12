@@ -123,4 +123,34 @@ export class ManageAccountsController {
       next(error)
     }
   }
+
+  /**
+   * Deletes a user (admin only).
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async deleteUser (req, res, next) {
+    try {
+      const response = await fetch(`http://localhost:${process.env.AUTH_SERVER_PORT}/auth/admin/users/${req.params.userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: req.headers.authorization
+        },
+        body: JSON.stringify(req.body)
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        res.status(response.status).json(errorData)
+      }
+
+      const data = await response.json()
+      res.status(200).json(data)
+    } catch (error) {
+      next(error)
+    }
+  }
 }

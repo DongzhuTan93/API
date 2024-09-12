@@ -19,3 +19,4 @@ router.get('/users/:userId', (req, res, next) => manageAccountsController.getUse
 
 // Protected routes.
 router.get('/admin/users', (req, res, next) => manageAccountsController.getAllUsers(req, res, next))
+router.delete('/admin/users/:userId', (req, res, next) => manageAccountsController.deleteUser(req, res, next))

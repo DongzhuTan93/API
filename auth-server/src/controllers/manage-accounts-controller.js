@@ -71,7 +71,6 @@ export class ManageAccountsController {
 
       res.status(201).json({ message: 'Admin  registered successfully!' })
     } catch (error) {
-      console.log("catched err")
       console.log(error)
       next(error)
     }
@@ -167,12 +166,36 @@ export class ManageAccountsController {
         res.status(404).json({ message: 'User not found' })
       }
       res.status(200).json({
-        id: user.id,
         username: user.username,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName
       })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  /**
+   * Deletes a user (admin only).
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   */
+  async deleteUser (req, res, next) {
+    try {
+      const userIdToDelete = req.params.userId
+
+      const deletedUser = await UserModel.findByIdAndDelete(userIdToDelete)
+
+      if (!deletedUser) {
+        res.status(404).json({ message: 'User not found.' })
+      }
+
+      // TODO: Implement cascade deletion for user's items or other associated data
+
+      res.status(200).json({ message: 'User deleted successfully.' })
     } catch (error) {
       next(error)
     }
