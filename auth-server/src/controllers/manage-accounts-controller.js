@@ -193,8 +193,6 @@ export class ManageAccountsController {
         res.status(404).json({ message: 'User not found.' })
       }
 
-      // TODO: Implement cascade deletion for user's items or other associated data
-
       res.status(200).json({ message: 'User deleted successfully.' })
     } catch (error) {
       next(error)
