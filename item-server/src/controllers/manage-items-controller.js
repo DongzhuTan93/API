@@ -118,7 +118,6 @@ export class ManageItemsController {
   async showAllItemsFromUser (req, res, next) {
     try {
       const userId = req.params.userId
-      const isAdmin = req.user && req.user.role === 'admin'
 
       const userItems = await ItemsModel.find({ itemId: userId })
 
@@ -127,20 +126,14 @@ export class ManageItemsController {
       }
 
       const formattedItems = userItems.map(item => {
-        if (isAdmin) {
-          // Admin sees all details.
-          return item.toObject()
-        } else {
-          // Regular users see limited details.
-          return {
-            itemObjectId: item._id,
-            itemName: item.itemName,
-            itemPrice: item.itemPrice,
-            description: item.description,
-            category: item.category,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt
-          }
+        return {
+          itemObjectId: item._id,
+          itemName: item.itemName,
+          itemPrice: item.itemPrice,
+          description: item.description,
+          category: item.category,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt
         }
       })
 

@@ -14,6 +14,16 @@ import { router as webhookRouter } from './webhook-router.js'
 
 export const router = express.Router()
 
+/* eslint-disable jsdoc/check-tag-names */
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
 router.use('/auth', authRouter)
 router.use('/categories', categoryRouter)
 router.use('/items', itemRouter)

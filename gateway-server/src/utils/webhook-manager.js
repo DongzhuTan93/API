@@ -60,7 +60,7 @@ class WebhookManager {
 
     const notifications = Array.from(userIds).map(userId => ({
       userId,
-      message: `Price of item with id : ${itemObjectId} has changed to ${newPrice} kr`
+      message: `Price of item with id : ${itemObjectId} has changed to ${newPrice}`
     }))
 
     for (const [id, url] of this.webhooks) {

@@ -14,6 +14,8 @@ import { randomUUID } from 'node:crypto'
 import http from 'node:http'
 import dotenv from 'dotenv'
 import { router } from './routers/router.js'
+import swaggerJsdoc from 'swagger-jsdoc'
+import swaggerUi from 'swagger-ui-express'
 
 dotenv.config()
 
@@ -52,6 +54,28 @@ try {
     next()
   })
 
+  // Swagger config.
+  const swaggerOptions = {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Second-Hand Store API',
+        version: '1.0.0',
+        description: 'API for managing a second-hand store'
+      },
+      servers: [
+        {
+          url: `http://localhost:${process.env.PORT}`,
+          description: 'Gateway server'
+        }
+      ]
+    },
+    apis: ['./src/routers/*.js', './src/routers/api/v1/*.js'] // Paths to files containing OpenAPI definitions.
+  }
+
+  const swaggerSpec = swaggerJsdoc(swaggerOptions)
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
   // Use the gateway router
   app.use(baseURL, router)
 
@@ -79,6 +103,16 @@ try {
     return res
       .status(err.status || 500)
       .json(copy)
+  })
+
+  // Catch 404 (ALWAYS keep this as the last route).
+  router.use('*', (req, res, next) => {
+    console.log(`404 Error: Path ${req.path} not found.`)
+    const statusCode = 404
+    const error = new Error(http.STATUS_CODES[statusCode])
+    error.status = statusCode
+
+    next(error)
   })
 
   // Starts the HTTP server listening for connections.
