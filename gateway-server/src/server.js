@@ -65,8 +65,12 @@ try {
       },
       servers: [
         {
+          url: 'https://api.dongzhutan.com',
+          description: 'Production server'
+        },
+        {
           url: `http://localhost:${process.env.PORT}`,
-          description: 'Gateway server'
+          description: 'Development server'
         }
       ]
     },
