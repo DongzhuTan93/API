@@ -30,7 +30,7 @@ export const router = express.Router()
  *                 format: uri
  *                 example: "https://webhook.site/0cf065b6-8a1c-4c54-91d0-c3ac3bb4a982"
  *     responses:
- *       201:
+ *       200:
  *         description: Webhook registered successfully
  *         content:
  *           application/json:
@@ -62,7 +62,7 @@ router.post('/register', (req, res) => {
     return res.status(400).json({ error: 'Webhook URL is required' })
   }
   const id = webhookManager.registerWebhook(url)
-  res.status(201).json({ id, message: 'Webhook registered successfully' })
+  res.status(200).json({ id, message: 'Webhook registered successfully' })
 })
 
 /* eslint-disable jsdoc/check-tag-names */

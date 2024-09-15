@@ -49,7 +49,7 @@ export class ManageCategoriesController {
       const { name } = req.body
       const category = new CategoryModel({ name })
       await category.save()
-      res.status(201).json(category)
+      res.status(200).json(category)
     } catch (error) {
       next(error)
     }
@@ -69,7 +69,7 @@ export class ManageCategoriesController {
       if (!category) {
         throw createError(404, 'Category not found')
       }
-      res.status(201).json(category)
+      res.status(200).json(category)
     } catch (error) {
       next(error)
     }

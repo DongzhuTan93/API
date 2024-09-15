@@ -35,7 +35,7 @@ export class ManageAccountsController {
 
       console.log('New user registered: ' + userDocument)
 
-      res.status(201).json({ message: 'User registered successfully!' })
+      res.status(200).json({ message: 'User registered successfully!' })
     } catch (error) {
       next(error)
     }
@@ -69,7 +69,7 @@ export class ManageAccountsController {
 
       console.log('New admin registered: ' + userDocument)
 
-      res.status(201).json({ message: 'Admin  registered successfully!' })
+      res.status(200).json({ message: 'Admin  registered successfully!' })
     } catch (error) {
       console.log(error)
       next(error)
@@ -110,7 +110,7 @@ export class ManageAccountsController {
         sameSite: 'strict' // Adjust based on your requirements.
       })
 
-      res.status(201).json({
+      res.status(200).json({
         message: 'User logged in successfully! The accesstoken: ' + accessToken,
         userId: userDocument.id,
         username: userDocument.username
