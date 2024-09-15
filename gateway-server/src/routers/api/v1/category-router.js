@@ -169,7 +169,7 @@ router.get('/:categoryName', (req, res, next) => manageCategoriesController.fetc
  *                 type: string
  *                 example: makeup
  *     responses:
- *       200:
+ *       201:
  *         description: Category created successfully
  *       400:
  *         description: Bad request

@@ -35,7 +35,7 @@ export class ManageAccountsController {
 
       console.log('New user registered: ' + userDocument)
 
-      res.status(200).json({ message: 'User registered successfully!' })
+      res.status(201).json({ message: 'User registered successfully!' })
     } catch (error) {
       next(error)
     }
@@ -69,7 +69,7 @@ export class ManageAccountsController {
 
       console.log('New admin registered: ' + userDocument)
 
-      res.status(200).json({ message: 'Admin  registered successfully!' })
+      res.status(201).json({ message: 'Admin  registered successfully!' })
     } catch (error) {
       console.log(error)
       next(error)
@@ -193,7 +193,7 @@ export class ManageAccountsController {
         res.status(404).json({ message: 'User not found.' })
       }
 
-      res.status(200).json({ message: 'User deleted successfully.' })
+      res.status(204).json({ message: 'User deleted successfully.' })
     } catch (error) {
       next(error)
     }

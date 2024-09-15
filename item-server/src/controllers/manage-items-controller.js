@@ -186,7 +186,7 @@ export class ManageItemsController {
       })
 
       console.log('New item document has been save to database: ' + itemDocument)
-      res.status(200).json(itemDocument)
+      res.status(201).json(itemDocument)
     } catch (error) {
       next(error)
     }

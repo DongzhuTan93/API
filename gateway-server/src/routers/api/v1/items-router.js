@@ -250,7 +250,7 @@ router.get('/user/items', authenticateJWT, (req, res, next) => manageItemsContro
  *                 type: string
  *                 example: musical instruments
  *     responses:
- *       200:
+ *       201:
  *         description: Item created successfully
  *       400:
  *         description: Bad request

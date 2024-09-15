@@ -49,7 +49,7 @@ const manageAccountsController = new ManageAccountsController()
  *                 type: string
  *                 example: admn@gmail.com
  *     responses:
- *       200:
+ *       201:
  *         description: User registered successfully
  *       400:
  *         description: Bad request
@@ -95,8 +95,8 @@ router.post('/register', (req, res, next) => manageAccountsController.registerUs
  *                 type: string
  *                 example: iw3zcmgeOiPXahN2YjEGB53gS
  *     responses:
- *       200:
- *         description: User registered successfully
+ *       201:
+ *         description: Admin registered successfully
  *       400:
  *         description: Bad request
  */
@@ -214,7 +214,7 @@ router.get('/admin/users', authenticateJWT, authenticateAdmin, (req, res, next) 
  *           type: string
  *         description: The ID of the user to delete
  *     responses:
- *       200:
+ *       204:
  *         description: User successfully deleted
  *       401:
  *         description: Unauthorized
