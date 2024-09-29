@@ -79,6 +79,9 @@ export class ManageItemsController {
         return res.status(200).json({
           items: [],
           message: 'No items found matching the criteria',
+          currentPage: data.currentPage,
+          totalPages: data.totalPages,
+          totalItems: data.totalItems,
           _links: {
             self: { href: `${req.protocol}://${req.get('host')}${req.originalUrl}` },
             createItem: { href: `${req.protocol}://${req.get('host')}/api/v1/items/create`, method: 'POST' }
