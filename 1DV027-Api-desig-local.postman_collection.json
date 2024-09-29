@@ -1,0 +1,1228 @@
+{
+	"info": {
+		"_postman_id": "c411ac2e-ea2a-4c86-8a58-6c6360493c1e",
+		"name": "1DV027-Api-desig-local",
+		"description": "API for managing a second-hand store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29472690"
+	},
+	"item": [
+		{
+			"name": "gateway-server",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Register user",
+							"item": [
+								{
+									"name": "Register (admin)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"if (response.id) {\r",
+													"    pm.environment.set('adminUserId', response.id);\r",
+													"    console.log(\"Admin ID saved:\", response.id);\r",
+													"} else {\r",
+													"    console.log(\"Warning: id not found in the response\");\r",
+													"}"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const uniqueSuffix = new Date().getTime();\r",
+													"pm.environment.set('adminUsername', `TestAdmin${uniqueSuffix}`);\r",
+													"pm.environment.set('adminPassword', `SecurePass${uniqueSuffix}123!`);\r",
+													"pm.environment.set('firstName', 'Test');\r",
+													"pm.environment.set('lastName', 'Admin');\r",
+													"pm.environment.set('adminEmail', `testadmin${uniqueSuffix}@example.com`);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"username\": \"{{adminUsername}}\",\r\n  \"password\": \"{{adminPassword}}\",\r\n  \"firstName\": \"{{firstName}}\",\r\n  \"lastName\": \"{{lastName}}\",\r\n  \"email\": \"{{adminEmail}}\",\r\n  \"adminSecret\": \"iw3zcmgeOiPXahN2YjEGB53gS\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/auth/register-admin",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"auth",
+												"register-admin"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Register normal users here."
+						},
+						{
+							"name": "Generate access_token",
+							"item": [
+								{
+									"name": "Login (admin)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"console.log(\"Access Token:\", response.accessToken);\r",
+													"pm.environment.set('adminAccessToken', response.accessToken);\r",
+													"console.log(\"Saved Token:\", pm.environment.get('adminAccessToken'));"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"username\": \"{{adminUsername}}\",\r\n  \"password\": \"{{adminPassword}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/auth/login",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Authenticate a user and receive an access token."
+						},
+						{
+							"name": "User Info",
+							"item": [
+								{
+									"name": "Get all of users info",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"console.log(\"Using Token:\", pm.environment.get('adminAccessToken'));"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Response includes user list\", function() {\r",
+													"    pm.expect(response.users).to.be.an('array');\r",
+													"});\r",
+													"\r",
+													"console.log(\"Response:\", JSON.stringify(response, null, 2));"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/auth/admin/users",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"auth",
+												"admin",
+												"users"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Only admin have right to get information about the authenticated users."
+						}
+					],
+					"description": "A collection of account / user activity."
+				},
+				{
+					"name": "Item",
+					"item": [
+						{
+							"name": "Create category",
+							"item": [
+								{
+									"name": "Admin create category",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"pm.environment.set('categoryId', response.id);\r",
+													"pm.environment.set('categoryName', response.name);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.environment.set('categoryName', 'clothes');"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"{{categoryName}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/categories/create",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"categories",
+												"create"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Only admin can create new categories."
+						},
+						{
+							"name": "Create items",
+							"item": [
+								{
+									"name": "Admin create items",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 201\", function () {\r",
+													"    pm.response.to.have.status(201);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"if (response.id) {\r",
+													"    pm.environment.set('itemId', response.id);\r",
+													"    console.log(\"Item ID saved:\", response.id);\r",
+													"} else {\r",
+													"    console.log(\"Warning: item id not found in the response\");\r",
+													"}"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.environment.set('itemName', `TestItem${new Date().getTime()}`);\r",
+													"\r",
+													"pm.environment.set('itemPrice', `${Math.floor(Math.random() * 1000) + 1} kr`);\r",
+													"\r",
+													"pm.environment.set('itemDescription', 'This is a test item description.');"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"itemName\": \"{{itemName}}\",\r\n    \"itemPrice\": \"{{itemPrice}}\",\r\n    \"description\": \"{{itemDescription}}\",\r\n    \"category\": \"{{categoryName}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items/create",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items",
+												"create"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Registered users can create new items in the store."
+						},
+						{
+							"name": "Get items",
+							"item": [
+								{
+									"name": "Show all items",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Response includes item list\"), () => {\r",
+													"    pm.expect(response.items).to.be.an('array');\r",
+													"};"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Everyone can query a list of all items."
+						},
+						{
+							"name": "List category",
+							"item": [
+								{
+									"name": "Show all categories",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response includes category list\"), () => {\r",
+													"    pm.expect(response).to.be.an('array');\r",
+													"};"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/categories/",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"categories",
+												""
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Everyone can query a list of all categories."
+						},
+						{
+							"name": "Get specific category and items",
+							"item": [
+								{
+									"name": "Get items from 'clothes' category",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response includes category and items\", () => {\r",
+													"    pm.expect(response.category).to.be.an('object');\r",
+													"    pm.expect(response.items).to.be.an('array');\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/categories/{{categoryName}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"categories",
+												"{{categoryName}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Everyone can choose a specific category with its items."
+						},
+						{
+							"name": "Get specific users items",
+							"item": [
+								{
+									"name": "Get admins items",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response includes user's items\", () => {\r",
+													"    pm.expect(response).to.be.an('array');\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items/user/items",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items",
+												"user",
+												"items"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "User can see the total items they have created."
+						},
+						{
+							"name": "Get all users and its items",
+							"item": [
+								{
+									"name": "Get all users and its items with admins account",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"\r",
+													"\r",
+													"pm.test(\"Response includes users and their items\", () => {\r",
+													"    pm.expect(response).to.be.an('array');\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items/admin/users-with-items",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items",
+												"admin",
+												"users-with-items"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Get all users and theirs items with admins account."
+						},
+						{
+							"name": "Update the whole item",
+							"item": [
+								{
+									"name": "Update the whole items with items object's id",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"pm.test(\"Item is updated\", function () {\r",
+													"pm.expect(response.itemName).to.eql(pm.environment.get('updatedItemName'));\r",
+													"pm.expect(response.itemPrice).to.eql(pm.environment.get('updatedItemPrice'));\r",
+													"pm.expect(response.description).to.eql(pm.environment.get('updatedItemDescription'));\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													" pm.environment.set('updatedItemName', `UpdatedItem${new Date().getTime()}`);\r",
+													"pm.environment.set('updatedItemPrice', `${Math.floor(Math.random() * 1000) + 1} kr`);\r",
+													"pm.environment.set('updatedItemDescription', 'This is an updated test item description.');"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"itemName\": \"{{updatedItemName}}\",\r\n    \"itemPrice\": \"{{updatedItemPrice}}\",\r\n    \"description\": \"{{updatedItemDescription}}\",\r\n    \"category\": \"{{categoryName}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items/{{itemId}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items",
+												"{{itemId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Update the whole item with items object's id."
+						},
+						{
+							"name": "Update items price",
+							"item": [
+								{
+									"name": "Update price at the admin item with items object id",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"\r",
+													"\r",
+													"pm.test(\"Item price is updated\", () => {\r",
+													"    pm.expect(response.itemPrice).to.eql(pm.environment.get('newItemPrice'));\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.environment.set('newItemPrice', `${Math.floor(Math.random() * 1000) + 1} kr`);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"itemPrice\": \"{{newItemPrice}}\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items/{{itemId}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items",
+												"{{itemId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Update only part of the item, such as: price."
+						},
+						{
+							"name": "Get specific items",
+							"item": [
+								{
+									"name": "Get items from a special range",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"const response = pm.response.json();\r",
+													"console.log(response);\r",
+													"\r",
+													"pm.test(\"Response structure is correct\", () => {\r",
+													"    pm.expect(response).to.be.an('object');\r",
+													"    pm.expect(response).to.have.property('items').that.is.an('array');\r",
+													"    pm.expect(response).to.have.property('currentPage').that.is.a('number');\r",
+													"    pm.expect(response).to.have.property('totalPages').that.is.a('number');\r",
+													"    pm.expect(response).to.have.property('totalItems').that.is.a('number');\r",
+													"    pm.expect(response).to.have.property('message').that.is.a('string');\r",
+													"    pm.expect(response).to.have.property('_links').that.is.an('object');\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Items have correct structure\", () => {\r",
+													"    if (response.items.length > 0) {\r",
+													"        const item = response.items[0];\r",
+													"        pm.expect(item).to.have.property('name').that.is.a('string');\r",
+													"        pm.expect(item).to.have.property('price').that.is.a('string');\r",
+													"        pm.expect(item).to.have.property('description').that.is.a('string');\r",
+													"        pm.expect(item).to.have.property('createdAt').that.is.a('string');\r",
+													"        pm.expect(item).to.have.property('seller').that.is.an('object');\r",
+													"        pm.expect(item).to.have.property('_links').that.is.an('object');\r",
+													"    }\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Pagination is working correctly\", () => {\r",
+													"    const page = parseInt(pm.request.url.query.get('page')) || 1;\r",
+													"    const limit = parseInt(pm.request.url.query.get('limit')) || 10;\r",
+													"    \r",
+													"    pm.expect(response.currentPage).to.equal(page);\r",
+													"    pm.expect(response.items.length).to.be.at.most(limit);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Filtering is applied correctly\", () => {\r",
+													"    const category = pm.request.url.query.get('category');\r",
+													"    const minPrice = parseFloat(pm.request.url.query.get('minPrice'));\r",
+													"    const maxPrice = parseFloat(pm.request.url.query.get('maxPrice'));\r",
+													"    \r",
+													"    if (category) {\r",
+													"        pm.expect(response.items.every(item => item.category === category)).to.be.true;\r",
+													"    }\r",
+													"    \r",
+													"    if (!isNaN(minPrice)) {\r",
+													"        pm.expect(response.items.every(item => parseFloat(item.price) >= minPrice)).to.be.true;\r",
+													"    }\r",
+													"    \r",
+													"    if (!isNaN(maxPrice)) {\r",
+													"        pm.expect(response.items.every(item => parseFloat(item.price) <= maxPrice)).to.be.true;\r",
+													"    }\r",
+													"});\r",
+													"\r",
+													"pm.test(\"HATEOAS links are present\", () => {\r",
+													"    pm.expect(response._links).to.have.property('self');\r",
+													"    pm.expect(response._links).to.have.property('createItem');\r",
+													"    pm.expect(response._links.self).to.have.property('href').that.is.a('string');\r",
+													"    pm.expect(response._links.createItem).to.have.property('href').that.is.a('string');\r",
+													"    pm.expect(response._links.createItem).to.have.property('method').that.equals('POST');\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"// Set up dynamic variables for the request\r",
+													"const currentTimestamp = new Date().getTime();\r",
+													"\r",
+													"\r",
+													"pm.environment.set('minPrice', 50);\r",
+													"pm.environment.set('maxPrice', 300);\r",
+													"pm.environment.set('page', 1);\r",
+													"pm.environment.set('limit', 10);\r",
+													"\r",
+													"console.log(`Preparing request at ${currentTimestamp}`);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items?category={{categoryName}}&minPrice={{minPrice}}&maxPrice={{maxPrice}}&page={{page}}&limit={{limit}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items"
+											],
+											"query": [
+												{
+													"key": "category",
+													"value": "{{categoryName}}"
+												},
+												{
+													"key": "minPrice",
+													"value": "{{minPrice}}"
+												},
+												{
+													"key": "maxPrice",
+													"value": "{{maxPrice}}"
+												},
+												{
+													"key": "page",
+													"value": "{{page}}"
+												},
+												{
+													"key": "limit",
+													"value": "{{limit}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Use the query conditions to obtain the specified items."
+						},
+						{
+							"name": "Delete item",
+							"item": [
+								{
+									"name": "Delete  item with items objects id",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 204\", function () {\r",
+													"    pm.response.to.have.status(204);\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/items/{{itemId}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"items",
+												"{{itemId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Delete item with items objects id."
+						},
+						{
+							"name": "Delete category",
+							"item": [
+								{
+									"name": "Delete  category with category's name",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code is 204\", function () {\r",
+													"    pm.response.to.have.status(204);\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/categories/{{categoryName}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"categories",
+												"{{categoryName}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Only admin have right to delete the category."
+						},
+						{
+							"name": "Delete user",
+							"item": [
+								{
+									"name": "Delete a user with users id",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													" // Test Script for User Deletion\r",
+													"   pm.test(\"User deletion\", function () {\r",
+													"     if (pm.environment.get('adminUserId')) {\r",
+													"       pm.response.to.have.status(204);\r",
+													"       console.log(\"User successfully deleted\");\r",
+													"        // Clear environment variables\r",
+													"        pm.environment.unset('adminUsername');\r",
+													"        pm.environment.unset('adminPassword');\r",
+													"        pm.environment.unset('adminAccessToken');\r",
+													"        pm.environment.unset('adminUserId');\r",
+													"        pm.environment.unset('categoryName');\r",
+													"        pm.environment.unset('categoryId');\r",
+													"        pm.environment.unset('itemName');\r",
+													"        pm.environment.unset('itemPrice');\r",
+													"        pm.environment.unset('itemDescription');\r",
+													"        pm.environment.unset('itemId');\r",
+													"     } else {\r",
+													"       console.log(\"No user to delete. Test skipped.\");\r",
+													"       pm.expect(true).to.be.true; // Passes the test\r",
+													"     }\r",
+													"   });"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{adminAccessToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrlLocal}}/api/v1/auth/admin/users/{{adminUserId}}",
+											"host": [
+												"{{baseUrlLocal}}"
+											],
+											"path": [
+												"api",
+												"v1",
+												"auth",
+												"admin",
+												"users",
+												"{{adminUserId}}"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Admin delete a user with users id."
+						}
+					],
+					"description": "A collection of items / categories activity."
+				},
+				{
+					"name": "Get the main link of the second-hand store API",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"console.log(response);\r",
+									"\r",
+									"pm.test(\"Status should be 200\"), () => {\r",
+									"    pm.expect(response.status).to.eql(200);\r",
+									"};"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlLocal}}",
+							"host": [
+								"{{baseUrlLocal}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "The API endpoints. Gateway-server collection."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "adminAccessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "baseUrlLocal",
+			"value": "https://api.dongzhutan.com",
+			"type": "string"
+		},
+		{
+			"key": "adminUsername",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "adminPassword",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "adminUserId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "categoryId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "itemId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "categoryName",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
