@@ -69,7 +69,7 @@ export class ManageAccountsController {
 
       console.log('New admin registered: ' + userDocument)
 
-      res.status(201).json({ message: 'Admin  registered successfully!' })
+      res.status(201).json(userDocument)
     } catch (error) {
       console.log(error)
       next(error)
@@ -111,9 +111,9 @@ export class ManageAccountsController {
       })
 
       res.status(200).json({
-        message: 'User logged in successfully! The accesstoken: ' + accessToken,
         userId: userDocument.id,
-        username: userDocument.username
+        username: userDocument.username,
+        accessToken
       })
     } catch (error) {
       // Authentication failed.
@@ -193,7 +193,7 @@ export class ManageAccountsController {
         res.status(404).json({ message: 'User not found.' })
       }
 
-      res.status(204).json({ message: 'User deleted successfully.' })
+      res.status(204).send()
     } catch (error) {
       next(error)
     }

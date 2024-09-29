@@ -147,8 +147,7 @@ export class ManageAccountsController {
         res.status(response.status).json(errorData)
       }
 
-      const data = await response.json()
-      res.status(204).json(data)
+      res.status(204).send()
     } catch (error) {
       next(error)
     }
