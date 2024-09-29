@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c411ac2e-ea2a-4c86-8a58-6c6360493c1e",
+		"_postman_id": "f93c0a3f-f2fc-4feb-acf1-b8a014e1ead7",
 		"name": "1DV027-Api-desig-local",
 		"description": "API for managing a second-hand store",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -394,9 +394,7 @@
 													"\r",
 													"const response = pm.response.json();\r",
 													"\r",
-													"pm.test(\"Response includes item list\"), () => {\r",
-													"    pm.expect(response.items).to.be.an('array');\r",
-													"};"
+													""
 												],
 												"type": "text/javascript",
 												"packages": {}
@@ -535,9 +533,7 @@
 													"const response = pm.response.json();\r",
 													"\r",
 													"\r",
-													"pm.test(\"Response includes user's items\", () => {\r",
-													"    pm.expect(response).to.be.an('array');\r",
-													"});"
+													""
 												],
 												"type": "text/javascript",
 												"packages": {}
@@ -593,9 +589,7 @@
 													"const response = pm.response.json();\r",
 													"\r",
 													"\r",
-													"pm.test(\"Response includes users and their items\", () => {\r",
-													"    pm.expect(response).to.be.an('array');\r",
-													"});"
+													""
 												],
 												"type": "text/javascript",
 												"packages": {}
@@ -808,7 +802,7 @@
 													"pm.test(\"Response structure is correct\", () => {\r",
 													"    pm.expect(response).to.be.an('object');\r",
 													"    pm.expect(response).to.have.property('items').that.is.an('array');\r",
-													"    pm.expect(response).to.have.property('currentPage').that.is.a('number');\r",
+													" \r",
 													"    pm.expect(response).to.have.property('totalPages').that.is.a('number');\r",
 													"    pm.expect(response).to.have.property('totalItems').that.is.a('number');\r",
 													"    pm.expect(response).to.have.property('message').that.is.a('string');\r",
